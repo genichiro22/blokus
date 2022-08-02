@@ -16,6 +16,29 @@ def flip_rot(p):
         p = p_
     return res
 
-new_yml = {key: flip_rot(yml[key]) for key in yml.keys()}
+def drop_dup(l):
+    while True:
+        # print("current", l)
+        n = len(l)
+        loop=False
+        drop_i = []
+        for i in range(n):
+            for j in range(n):
+                a = tuple([tuple(e) for e in l[i]])
+                b = tuple([tuple(e) for e in l[j]])
+                if i>j and a==b:
+                    del l[i]
+                    loop = True
+                    break
+            else:
+                continue
+            break
+        if not loop:
+            break
 
-print(new_yml)
+new_yml = {key: flip_rot(yml[key]) for key in yml.keys()}
+for s in new_yml.keys():
+    print(s)
+    print(new_yml[s])
+    drop_dup(new_yml[s])
+    print(new_yml[s])
