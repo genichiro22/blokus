@@ -2,8 +2,8 @@ import yaml
 import numpy as np
 
 with open("piece.yaml") as f:
-    yml = yaml.safe_load(f)
-print(yml)
+    _yml = yaml.safe_load(f)
+# print(_yml)
 
 def flip_rot(p):
     res = []
@@ -21,7 +21,6 @@ def drop_dup(l):
         # print("current", l)
         n = len(l)
         loop=False
-        drop_i = []
         for i in range(n):
             for j in range(n):
                 a = tuple([tuple(e) for e in l[i]])
@@ -36,9 +35,7 @@ def drop_dup(l):
         if not loop:
             break
 
-new_yml = {key: flip_rot(yml[key]) for key in yml.keys()}
-for s in new_yml.keys():
-    print(s)
-    print(new_yml[s])
-    drop_dup(new_yml[s])
-    print(new_yml[s])
+pieces_fr = {key: flip_rot(_yml[key]) for key in _yml.keys()}
+for s in pieces_fr.values():
+    drop_dup(s)
+# print(pieces_fr)
