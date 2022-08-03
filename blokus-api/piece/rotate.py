@@ -1,7 +1,7 @@
 import yaml
 import numpy as np
 
-with open("piece.yaml") as f:
+with open("piece/piece.yaml") as f:
     _yml = yaml.safe_load(f)
 # print(_yml)
 
