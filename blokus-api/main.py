@@ -1,15 +1,25 @@
 from fastapi import FastAPI, Depends, status, Response, HTTPException
-from piece import rotate
+from .schemas import PieceName
+from .models import PieceName, Piece
+from . import models
+from .database import engine, sessionLocal, Base
+from sqlalchemy.orm import Session
+# from .piece import rotate
 import json
-pieces_fr = rotate.pieces_fr
-p_fr_base = {key: [x.tolist() for x in pieces_fr[key]] for key in pieces_fr.keys()}
+# pieces_fr = rotate.pieces_fr
+# p_fr_base = {}
 
 app = FastAPI()
+Base.metadata.create_all(engine)
 
+# @app.get("/")
+# def index():
+#     return json.dumps(p_fr_base)
 @app.get("/")
 def index():
-    return json.dumps(p_fr_base)
+    return ""
 
+'''
 @app.get("/{piece_name}/", status_code=status.HTTP_200_OK)
 def fr(piece_name:str, response:Response):
     if piece_name not in p_fr_base.keys():
@@ -32,3 +42,4 @@ def fr(piece_name:str, id:int, response:Response):
             detail = f"Index {id} is not found in flip-rotation of the piece {piece_name}"
         )
     return json.dumps(p_fr_base[piece_name][id])
+'''
