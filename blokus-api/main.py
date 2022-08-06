@@ -1,7 +1,7 @@
 from email.mime import base
 from fastapi import FastAPI, Depends, status, Response, HTTPException
 from .schemas import PiecePost
-from .models import PieceName, PieceFR
+from .models import PieceBase, PieceFR
 from . import models
 from .database import engine, sessionLocal, Base, get_db
 from sqlalchemy.orm import Session
@@ -30,7 +30,7 @@ def post_piece(piece:PiecePost, db:Session=Depends(get_db),):
     # print(coordinates)
     # print(json.dumps(coordinates))
     # base_shape = piece.base_shape
-    new_piece = models.PieceName(
+    new_piece = models.PieceBase(
         name = piece.name,
         base_shape = json.dumps(coordinates)
     )
@@ -41,7 +41,7 @@ def post_piece(piece:PiecePost, db:Session=Depends(get_db),):
 
 @app.get("/{piece_name}/", status_code=status.HTTP_200_OK)
 def get_piece(piece_name:str, db:Session=Depends(get_db)):
-    piece = db.query(models.PieceName).filter(models.PieceName.name==piece_name).first()
+    piece = db.query(models.PieceBase).filter(models.PieceBase.name==piece_name).first()
     if not piece:
         raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND,
@@ -51,7 +51,7 @@ def get_piece(piece_name:str, db:Session=Depends(get_db)):
 
 @app.post("/{piece_name}/", status_code=status.HTTP_201_CREATED)
 def fr_piece(piece_name:str, db:Session=Depends(get_db)):
-    piece = db.query(models.PieceName).filter(models.PieceName.name==piece_name).first()
+    piece = db.query(models.PieceBase).filter(models.PieceBase.name==piece_name).first()
     if not piece:
         raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND,
@@ -60,7 +60,7 @@ def fr_piece(piece_name:str, db:Session=Depends(get_db)):
     base_shape = json.loads(piece.base_shape)
     x_max = max(c["x"] for c in base_shape)
     y_max = max(c["y"] for c in base_shape)
-    arr = np.zeros((x_max+1, y_max+1))
+    arr = np.zeros((x_max+1, y_max+1), dtype=int)
     for c in base_shape:
         x = c["x"]
         y = c["y"]
@@ -71,13 +71,15 @@ def fr_piece(piece_name:str, db:Session=Depends(get_db)):
     print(base_shape)
     fl_id = 0
     for arr in l:
+        print(arr)
         for x,y in list(zip(*np.where(arr==1))):
             piece_fr = PieceFR(
-                piecename_id = piece.id,
+                piecebase_id = piece.id,
                 fliprot_id = fl_id,
-                x = x,
-                y = y,
+                x = int(x),
+                y = int(y),
             )
+            print(piece.id, fl_id, x, y)
             db.add(piece_fr)
         fl_id += 1
     db.commit()
@@ -85,16 +87,18 @@ def fr_piece(piece_name:str, db:Session=Depends(get_db)):
 
 '''
 @app.get("/{piece_name}/{id}", status_code=status.HTTP_200_OK)
-def fr(piece_name:str, id:int, response:Response):
-    if piece_name not in p_fr_base.keys():
+def fr(piece_name:str, id:int, db:Session=Depends(get_db)):
+    piece = db.query(PieceFR).join(PieceBase, PieceFR.piecebase_id==PieceBase.id).filter(PieceBase.name==piece_name).filter(PieceFR.fliprot_id==id).all()
+    print(piece)
+    if False:
         raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND,
             detail = f"Piece name of {piece_name} is not available"
         )
-    if id>=len(p_fr_base[piece_name]):
+    if False:
         raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND,
             detail = f"Index {id} is not found in flip-rotation of the piece {piece_name}"
         )
-    return json.dumps(p_fr_base[piece_name][id])
+    return piece
 '''
