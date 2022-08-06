@@ -85,20 +85,19 @@ def fr_piece(piece_name:str, db:Session=Depends(get_db)):
     db.commit()
     db.refresh(piece_fr)
 
-'''
 @app.get("/{piece_name}/{id}", status_code=status.HTTP_200_OK)
 def fr(piece_name:str, id:int, db:Session=Depends(get_db)):
-    piece = db.query(PieceFR).join(PieceBase, PieceFR.piecebase_id==PieceBase.id).filter(PieceBase.name==piece_name).filter(PieceFR.fliprot_id==id).all()
-    print(piece)
-    if False:
+    query = db.query(PieceFR).join(PieceBase, PieceFR.piecebase_id==PieceBase.id).filter(PieceBase.name==piece_name)
+    pieces = query.all()
+    if not pieces:
         raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND,
             detail = f"Piece name of {piece_name} is not available"
         )
-    if False:
+    piece = query.filter(PieceFR.fliprot_id==id).all()
+    if not piece:
         raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND,
             detail = f"Index {id} is not found in flip-rotation of the piece {piece_name}"
         )
     return piece
-'''
