@@ -18,3 +18,14 @@ class PieceFR(Base):
     y = Column(Integer)
 
     base = relationship('PieceBase', back_populates="piece_fr")
+
+class Field(Base):
+    __tablename__ = "field"
+    id = Column(Integer, primary_key=True, index=True)
+    x = Column(Integer)
+    y = Column(Integer)
+    p1 = Column(Boolean)
+    p2 = Column(Boolean)
+    p3 = Column(Boolean)
+    p4 = Column(Boolean)
+
