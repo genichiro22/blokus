@@ -22,11 +22,11 @@ def index():
 @app.post("/")
 def post_piece(piece:PiecePost, db:Session=Depends(get_db),):
     # print(base_shape)
-    print(piece.base_shape)
+    # print(piece.base_shape)
     coordinates = [{"x":c.x, "y":c.y} for c in piece.base_shape]
-    print(coordinates)
-    print(json.dumps(coordinates))
-    base_shape = piece.base_shape
+    # print(coordinates)
+    # print(json.dumps(coordinates))
+    # base_shape = piece.base_shape
     new_piece = models.PieceName(
         name = piece.name,
         base_shape = json.dumps(coordinates)
