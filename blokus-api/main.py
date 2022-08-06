@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, status, Response, HTTPException
 from .schemas import PiecePost
 from .models import PieceBase, PieceFR
-from . import models
+# from . import models
 from .database import engine, sessionLocal, Base, get_db
 from sqlalchemy.orm import Session
 # from .piece import rotate
@@ -29,7 +29,7 @@ def post_piece(piece:PiecePost, db:Session=Depends(get_db),):
     # print(coordinates)
     # print(json.dumps(coordinates))
     # base_shape = piece.base_shape
-    new_piece = models.PieceBase(
+    new_piece = PieceBase(
         name = piece.name,
         base_shape = json.dumps(coordinates)
     )
@@ -40,7 +40,7 @@ def post_piece(piece:PiecePost, db:Session=Depends(get_db),):
 
 @app.get("/{piece_name}/", status_code=status.HTTP_200_OK)
 def get_piece(piece_name:str, db:Session=Depends(get_db)):
-    piece = db.query(models.PieceBase).filter(models.PieceBase.name==piece_name).first()
+    piece = db.query(PieceBase).filter(PieceBase.name==piece_name).first()
     if not piece:
         raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND,
@@ -50,7 +50,7 @@ def get_piece(piece_name:str, db:Session=Depends(get_db)):
 
 @app.post("/{piece_name}/", status_code=status.HTTP_201_CREATED)
 def fr_piece(piece_name:str, db:Session=Depends(get_db)):
-    piece = db.query(models.PieceBase).filter(models.PieceBase.name==piece_name).first()
+    piece = db.query(PieceBase).filter(PieceBase.name==piece_name).first()
     if not piece:
         raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND,
