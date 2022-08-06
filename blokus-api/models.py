@@ -3,9 +3,10 @@ from sqlalchemy.orm import relationship
 from .database import Base
 
 class PieceName(Base):
-    __tablename__ = "piecename"
+    __tablename__ = "piece_name"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
+    base_shape = Column(String)
     
 class Piece(Base):
     __tablename__ = "piece_fliprot"
