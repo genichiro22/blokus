@@ -1,8 +1,8 @@
-import yaml
+# import yaml
 import numpy as np
 
-with open("piece/piece.yaml") as f:
-    _yml = yaml.safe_load(f)
+# with open("piece/piece.yaml") as f:
+#     _yml = yaml.safe_load(f)
 # print(_yml)
 
 def flip_rot(p):
@@ -35,7 +35,7 @@ def drop_dup(l):
         if not loop:
             break
 
-pieces_fr = {key: flip_rot(_yml[key]) for key in _yml.keys()}
-for s in pieces_fr.values():
-    drop_dup(s)
+# pieces_fr = {key: flip_rot(_yml[key]) for key in _yml.keys()}
+# for s in pieces_fr.values():
+    # drop_dup(s)
 # print(pieces_fr)

@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 # from .piece import rotate
 import json
 import numpy as np
+from .rotate import rotate
 # pieces_fr = rotate.pieces_fr
 # p_fr_base = {}
 
@@ -60,15 +61,25 @@ def fr_piece(piece_name:str, db:Session=Depends(get_db)):
     x_max = max(c["x"] for c in base_shape)
     y_max = max(c["y"] for c in base_shape)
     arr = np.zeros((x_max+1, y_max+1))
-    print(base_shape)
     for c in base_shape:
-        piece_fr = PieceFR(
-            piecename_id = piece.id,
-            fliprot_id = 1,
-            x = c["x"],
-            y = c["y"],
-        )
-        db.add(piece_fr)
+        x = c["x"]
+        y = c["y"]
+        arr[x,y] = 1
+    l = rotate.flip_rot(arr)
+    rotate.drop_dup(l)
+    print(l)
+    print(base_shape)
+    fl_id = 0
+    for arr in l:
+        for x,y in list(zip(*np.where(arr==1))):
+            piece_fr = PieceFR(
+                piecename_id = piece.id,
+                fliprot_id = fl_id,
+                x = x,
+                y = y,
+            )
+            db.add(piece_fr)
+        fl_id += 1
     db.commit()
     db.refresh(piece_fr)
 
