@@ -1,4 +1,3 @@
-from email.mime import base
 from fastapi import FastAPI, Depends, status, Response, HTTPException
 from .schemas import PiecePost
 from .models import PieceBase, PieceFR
