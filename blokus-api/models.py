@@ -24,8 +24,8 @@ class Field(Base):
     id = Column(Integer, primary_key=True, index=True)
     x = Column(Integer)
     y = Column(Integer)
-    p1 = Column(Boolean)
-    p2 = Column(Boolean)
-    p3 = Column(Boolean)
-    p4 = Column(Boolean)
+    p1 = Column(Boolean, default=False)
+    p2 = Column(Boolean, default=False)
+    p3 = Column(Boolean, default=False)
+    p4 = Column(Boolean, default=False)
 

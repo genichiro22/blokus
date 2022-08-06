@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends, status, Response, HTTPException
-from .schemas import PiecePost
-from .models import PieceBase, PieceFR
+from .schemas import PiecePost, FieldPost
+from .models import PieceBase, PieceFR, Field
 # from . import models
 from .database import engine, sessionLocal, Base, get_db
 from sqlalchemy.orm import Session
@@ -100,3 +100,23 @@ def fr(piece_name:str, id:int, db:Session=Depends(get_db)):
             detail = f"Index {id} is not found in flip-rotation of the piece {piece_name}"
         )
     return piece
+
+@app.get("/field/")
+def get_field(db:Session=Depends(get_db)):
+    field = db.query(Field).all()
+    return field
+'''
+@app.put("/field/")
+def update_field(field_update:FieldPost, db:Session=Depends(get_db)):
+    player = field_update.player
+    for c in field_update.coordinates:
+        current_field = db.query(Field).filter(Field.x == c.x).filter(Field.y == c.y)
+        field = Field(
+            x = c.x,
+            y = c.y,
+            p1 = True
+        )
+        current_field.update(field.dict())
+    db.commit()
+    return "updated"
+'''

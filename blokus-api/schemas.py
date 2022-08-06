@@ -12,3 +12,9 @@ class PiecePost(BaseModel):
     base_shape: List[Coordinate]
     class Config:
         orm_mode=True
+
+class FieldPost(BaseModel):
+    player: int
+    coordinates: List[Coordinate]
+    class Config:
+        orm_mode=True
