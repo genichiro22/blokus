@@ -1,11 +1,13 @@
+from email.mime import base
 from fastapi import FastAPI, Depends, status, Response, HTTPException
 from .schemas import PiecePost
-from .models import PieceName, Piece
+from .models import PieceName, PieceFR
 from . import models
 from .database import engine, sessionLocal, Base, get_db
 from sqlalchemy.orm import Session
 # from .piece import rotate
 import json
+import numpy as np
 # pieces_fr = rotate.pieces_fr
 # p_fr_base = {}
 
@@ -19,7 +21,7 @@ Base.metadata.create_all(engine)
 def index():
     return ""
 
-@app.post("/")
+@app.post("/", status_code=status.HTTP_201_CREATED)
 def post_piece(piece:PiecePost, db:Session=Depends(get_db),):
     # print(base_shape)
     # print(piece.base_shape)
@@ -37,7 +39,7 @@ def post_piece(piece:PiecePost, db:Session=Depends(get_db),):
     return new_piece
 
 @app.get("/{piece_name}/", status_code=status.HTTP_200_OK)
-def fr(piece_name:str, db:Session=Depends(get_db)):
+def get_piece(piece_name:str, db:Session=Depends(get_db)):
     piece = db.query(models.PieceName).filter(models.PieceName.name==piece_name).first()
     if not piece:
         raise HTTPException(
@@ -45,6 +47,30 @@ def fr(piece_name:str, db:Session=Depends(get_db)):
             detail = f"Piece name of {piece_name} is not available"
         )
     return piece
+
+@app.post("/{piece_name}/", status_code=status.HTTP_201_CREATED)
+def fr_piece(piece_name:str, db:Session=Depends(get_db)):
+    piece = db.query(models.PieceName).filter(models.PieceName.name==piece_name).first()
+    if not piece:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail = f"Piece name of {piece_name} is not available"
+        )
+    base_shape = json.loads(piece.base_shape)
+    x_max = max(c["x"] for c in base_shape)
+    y_max = max(c["y"] for c in base_shape)
+    arr = np.zeros((x_max+1, y_max+1))
+    print(base_shape)
+    for c in base_shape:
+        piece_fr = PieceFR(
+            piecename_id = piece.id,
+            fliprot_id = 1,
+            x = c["x"],
+            y = c["y"],
+        )
+        db.add(piece_fr)
+    db.commit()
+    db.refresh(piece_fr)
 
 '''
 @app.get("/{piece_name}/{id}", status_code=status.HTTP_200_OK)

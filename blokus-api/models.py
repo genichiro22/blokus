@@ -8,10 +8,10 @@ class PieceName(Base):
     name = Column(String)
     base_shape = Column(String)
     
-class Piece(Base):
+class PieceFR(Base):
     __tablename__ = "piece_fliprot"
     id = Column(Integer, primary_key=True, index=True)
     piecename_id = Column(Integer)
     fliprot_id = Column(Integer)
-    x = Column(Boolean)
-    y = Column(Boolean)
+    x = Column(Integer)
+    y = Column(Integer)
