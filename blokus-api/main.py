@@ -36,16 +36,17 @@ def post_piece(piece:PiecePost, db:Session=Depends(get_db),):
     db.refresh(new_piece)
     return new_piece
 
-'''
 @app.get("/{piece_name}/", status_code=status.HTTP_200_OK)
-def fr(piece_name:str, response:Response):
-    if piece_name not in p_fr_base.keys():
+def fr(piece_name:str, db:Session=Depends(get_db)):
+    piece = db.query(models.PieceName).filter(models.PieceName.name==piece_name).first()
+    if not piece:
         raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND,
             detail = f"Piece name of {piece_name} is not available"
         )
-    return json.dumps(p_fr_base[piece_name])
+    return piece
 
+'''
 @app.get("/{piece_name}/{id}", status_code=status.HTTP_200_OK)
 def fr(piece_name:str, id:int, response:Response):
     if piece_name not in p_fr_base.keys():
