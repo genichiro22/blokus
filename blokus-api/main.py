@@ -38,7 +38,7 @@ def post_piece(piece:PiecePost, db:Session=Depends(get_db),):
     db.refresh(new_piece)
     return new_piece
 
-@app.get("/{piece_name}/", status_code=status.HTTP_200_OK)
+@app.get("/pieces/{piece_name}/", status_code=status.HTTP_200_OK)
 def get_piece(piece_name:str, db:Session=Depends(get_db)):
     piece = db.query(PieceBase).filter(PieceBase.name==piece_name).first()
     if not piece:
@@ -48,7 +48,7 @@ def get_piece(piece_name:str, db:Session=Depends(get_db)):
         )
     return piece
 
-@app.post("/{piece_name}/", status_code=status.HTTP_201_CREATED)
+@app.post("/pieces/{piece_name}/", status_code=status.HTTP_201_CREATED)
 def fr_piece(piece_name:str, db:Session=Depends(get_db)):
     piece = db.query(PieceBase).filter(PieceBase.name==piece_name).first()
     if not piece:
@@ -84,7 +84,7 @@ def fr_piece(piece_name:str, db:Session=Depends(get_db)):
     db.commit()
     db.refresh(piece_fr)
 
-@app.get("/{piece_name}/{id}", status_code=status.HTTP_200_OK)
+@app.get("/pieces/{piece_name}/{id}", status_code=status.HTTP_200_OK)
 def fr(piece_name:str, id:int, db:Session=Depends(get_db)):
     query = db.query(PieceFR).join(PieceBase, PieceFR.piecebase_id==PieceBase.id).filter(PieceBase.name==piece_name)
     pieces = query.all()
@@ -102,21 +102,30 @@ def fr(piece_name:str, id:int, db:Session=Depends(get_db)):
     return piece
 
 @app.get("/field/")
-def get_field(db:Session=Depends(get_db)):
+def get_field(db:Session=Depends(get_db), status_code=status.HTTP_200_OK):
     field = db.query(Field).all()
     return field
-'''
+
+@app.post("/field/")
+def post_field(db:Session=Depends(get_db), status_code=status.HTTP_201_CREATED):
+    for x in range(20):
+        for y in range(20):
+            plot = Field(x=x, y=y)
+            db.add(plot)
+    db.commit()
+    db.refresh(plot)
+    return
+
 @app.put("/field/")
-def update_field(field_update:FieldPost, db:Session=Depends(get_db)):
+def update_field(field_update:FieldPost, db:Session=Depends(get_db), status_code=status.HTTP_200_OK):
     player = field_update.player
     for c in field_update.coordinates:
         current_field = db.query(Field).filter(Field.x == c.x).filter(Field.y == c.y)
-        field = Field(
-            x = c.x,
-            y = c.y,
-            p1 = True
-        )
-        current_field.update(field.dict())
+        field = {
+            "x": c.x,
+            "y": c.y,
+            "value": player
+        }
+        current_field.update(field)
     db.commit()
     return "updated"
-'''
