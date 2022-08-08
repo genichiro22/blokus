@@ -18,3 +18,10 @@ class FieldPost(BaseModel):
     coordinates: List[Coordinate]
     class Config:
         orm_mode=True
+
+class PutPiece(BaseModel):
+    player: int
+    piece_id: int
+    coordinate: Coordinate
+    class Config:
+        orm_mode=True
