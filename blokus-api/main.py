@@ -21,7 +21,7 @@ Base.metadata.create_all(engine)
 def index():
     return ""
 
-@app.post("/", status_code=status.HTTP_201_CREATED)
+@app.post("/pieces/", status_code=status.HTTP_201_CREATED)
 def post_piece(piece:PiecePost, db:Session=Depends(get_db),):
     # print(base_shape)
     # print(piece.base_shape)
@@ -36,6 +36,7 @@ def post_piece(piece:PiecePost, db:Session=Depends(get_db),):
     db.add(new_piece)
     db.commit()
     db.refresh(new_piece)
+    print(new_piece.id)
     return new_piece
 
 @app.get("/pieces/{piece_name}/", status_code=status.HTTP_200_OK)
@@ -48,7 +49,15 @@ def get_piece(piece_name:str, db:Session=Depends(get_db)):
         )
     return piece
 
-@app.post("/pieces/{piece_name}/", status_code=status.HTTP_201_CREATED)
+@app.post("/pieces/all/")
+def fr_all(db:Session=Depends(get_db)):
+    pieces = db.query(PieceBase).all()
+    for p in pieces:
+        print(p.name)
+        fr_piece(p.name, db)
+    return "done"
+
+# @app.post("/pieces/{piece_name}/", status_code=status.HTTP_201_CREATED)
 def fr_piece(piece_name:str, db:Session=Depends(get_db)):
     piece = db.query(PieceBase).filter(PieceBase.name==piece_name).first()
     if not piece:

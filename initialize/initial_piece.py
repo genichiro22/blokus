@@ -5,7 +5,7 @@ import requests
 with open("piece.yaml") as f:
     d = yaml.safe_load(f)
 
-url = "http://localhost:8000/"
+url = "http://localhost:8000/pieces/"
 
 for key in d.keys():
     c = np.where(np.array(d[key])==1)
@@ -18,6 +18,6 @@ for key in d.keys():
     }
     r_post = requests.post(url, json=body)
     
-
+requests.post(url+"all/")
 
 
