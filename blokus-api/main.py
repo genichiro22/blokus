@@ -129,10 +129,10 @@ def ged_rendered_field(db:Session=Depends(get_db)):
             # print(p)
             ly.append(str(p))
         l.append(ly)
-    print(l)
-    for i in range(len(l)):
-        l[i] = "|".join(l[i])
-    s = "<br>".join(l)
+    # print(l)
+    # for i in range(len(l)):
+        # l[i] = "|".join(l[i])
+    s = "<br>".join(["|".join(e) for e in l])
     return HTMLResponse(content=s, status_code=200)
 
 @app.post("/field/")
