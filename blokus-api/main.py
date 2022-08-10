@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends, status, Response, HTTPException
-from .schemas import PiecePost, FieldPost
+from fastapi.responses import HTMLResponse
+from .schemas import PiecePost, FieldPost, PutPiece
 from .models import PieceBase, PieceFR, Field
 # from . import models
 from .database import engine, sessionLocal, Base, get_db
@@ -115,6 +116,25 @@ def get_field(db:Session=Depends(get_db), status_code=status.HTTP_200_OK):
     field = db.query(Field).all()
     return field
 
+@app.get("/field/render/")
+def ged_rendered_field(db:Session=Depends(get_db)):
+    l = []
+    for y in range(20):
+        ly=[]
+        for x in range(20):
+            e = db.query(Field).filter(Field.x==x, Field.y==y)
+            p = e.first().value
+            # print(p)
+            # if p!=0:
+            # print(p)
+            ly.append(str(p))
+        l.append(ly)
+    print(l)
+    for i in range(len(l)):
+        l[i] = "|".join(l[i])
+    s = "<br>".join(l)
+    return HTMLResponse(content=s, status_code=200)
+
 @app.post("/field/")
 def post_field(db:Session=Depends(get_db), status_code=status.HTTP_201_CREATED):
     for x in range(20):
@@ -138,3 +158,20 @@ def update_field(field_update:FieldPost, db:Session=Depends(get_db), status_code
         current_field.update(field)
     db.commit()
     return "updated"
+
+@app.put("/field/piece/")
+def put_piece_to_field(put_piece:PutPiece, db:Session=Depends(get_db)):
+    print(put_piece)
+    print(1)
+    piece = db.query(PieceFR).filter(PieceFR.piecebase_id==put_piece.piece_id, PieceFR.fliprot_id==put_piece.fr_id).all()
+    print(piece)
+    coordinates = [
+        {"x":put_piece.coordinate.x + e.x, "y":put_piece.coordinate.y + e.y}
+        for e in piece
+    ]
+    print(coordinates)
+    field_post = FieldPost(
+        player=put_piece.player,
+        coordinates=coordinates
+    )
+    update_field(field_post, db)
