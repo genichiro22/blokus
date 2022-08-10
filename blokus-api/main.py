@@ -125,15 +125,15 @@ def ged_rendered_field(db:Session=Depends(get_db)):
             e = db.query(Field).filter(Field.x==x, Field.y==y)
             p = e.first().value
             # print(p)
-            # if p!=0:
-            # print(p)
-            ly.append(str(p))
+            append_str = str(p) if p!=0 else " "
+            ly.append(append_str)
         l.append(ly)
     # print(l)
     # for i in range(len(l)):
         # l[i] = "|".join(l[i])
-    s = "<br>".join(["|".join(e) for e in l])
-    return HTMLResponse(content=s, status_code=200)
+    s = "|"+"<br>|".join(["|".join(e) for e in l])
+    s2 = '<font face="ＭＳ ゴシック">' + s + '</font>'
+    return HTMLResponse(content=s2, status_code=200)
 
 @app.post("/field/")
 def post_field(db:Session=Depends(get_db), status_code=status.HTTP_201_CREATED):
