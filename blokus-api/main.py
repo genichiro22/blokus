@@ -171,6 +171,11 @@ def put_piece_to_field(put_piece:PutPiece, db:Session=Depends(get_db)):
         for e in piece
     ]
     # print(coordinates)
+    if not validate_inner_field(put_piece,db):
+        raise HTTPException(
+            status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail = "Not in field"
+        )
     ve = validate_existence(put_piece, db)
     if not all(all(e.values()) for e in ve):
         l = [str(list(e.keys())[0]) for e in ve if not all(e.values())]
@@ -198,6 +203,17 @@ def put_piece_to_field(put_piece:PutPiece, db:Session=Depends(get_db)):
     )
     update_field(field_post, db)
 
+def validate_inner_field(put_piece:PutPiece, db:Session=Depends(get_db)):
+    # valid = True
+    piece = db.query(PieceFR).filter(PieceFR.piecebase_id==put_piece.piece_id, PieceFR.fliprot_id==put_piece.fr_id).all()
+    # print(piece)
+    coordinates = [
+        {"x":put_piece.coordinate.x + e.x, "y":put_piece.coordinate.y + e.y}
+        for e in piece
+    ]
+    print(coordinates)
+    return not any(any((c["x"]>=20,c["y"]>=20)) for c in coordinates)
+
 def validate_existence(put_piece:PutPiece, db:Session=Depends(get_db)):
     piece = db.query(PieceFR).filter(PieceFR.piecebase_id==put_piece.piece_id, PieceFR.fliprot_id==put_piece.fr_id).all()
     # print(piece)
@@ -224,7 +240,10 @@ def validate_edge_condition(put_piece:PutPiece, db:Session=Depends(get_db)):
     for c_dic, dx, dy in itertools.product(coordinates,(-1,1),(-1,1)):
         x = c_dic["x"]+dx
         y = c_dic["y"]+dy
-        if field.filter(Field.x==x, Field.y==y).first().value == put_piece.player:
+        query = field.filter(Field.x==x, Field.y==y).first()
+        if not query:
+            pass
+        elif query.value == put_piece.player:
             valid = True
     return valid
 
@@ -240,6 +259,9 @@ def validate_vertex_condition(put_piece:PutPiece, db:Session=Depends(get_db)):
         for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
             x = c_dic["x"]+dx
             y = c_dic["y"]+dy
-            if field.filter(Field.x==x, Field.y==y).first().value == put_piece.player:
+            query = field.filter(Field.x==x, Field.y==y).first()
+            if not query:
+                pass
+            elif query.value == put_piece.player:
                 valid = False
     return valid
