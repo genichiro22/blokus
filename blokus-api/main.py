@@ -179,24 +179,31 @@ def put_piece_to_field(put_piece:PutPiece, db:Session=Depends(get_db)):
     ve = validate_existence(put_piece, db)
     if not all(all(e.values()) for e in ve):
         l = [str(list(e.keys())[0]) for e in ve if not all(e.values())]
-        print(l)
+        # print(l)
         raise HTTPException(
             status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail = f"(x,y) = {', '.join(l)} already filled"
         )
-    print(validate_edge_condition(put_piece, db))
-    vec = validate_edge_condition(put_piece, db)
-    if not vec:
-        raise HTTPException(
-            status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail = "Edge condition not satisfied"
-        )
-    vvc = validate_vertex_condition(put_piece, db)
-    if not vvc:
-        raise HTTPException(
-            status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail = "Vertex condition not satisfied"
-        )
+    # print(validate_edge_condition(put_piece, db))
+    if put_piece.turn==0:
+        if not validate_first_turn(put_piece, db):
+            raise HTTPException(
+                status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail = "First turn requirement not satisfied"
+            )
+    else:
+        vec = validate_edge_condition(put_piece, db)
+        if not vec:
+            raise HTTPException(
+                status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail = "Edge condition not satisfied"
+            )
+        vvc = validate_vertex_condition(put_piece, db)
+        if not vvc:
+            raise HTTPException(
+                status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail = "Vertex condition not satisfied"
+            )
     field_post = FieldPost(
         player=put_piece.player,
         coordinates=coordinates
@@ -229,7 +236,7 @@ def validate_existence(put_piece:PutPiece, db:Session=Depends(get_db)):
     ]
     return existence
 
-def validate_edge_condition(put_piece:PutPiece, db:Session=Depends(get_db)):
+def validate_vertex_condition(put_piece:PutPiece, db:Session=Depends(get_db)):
     valid = False
     piece = db.query(PieceFR).filter(PieceFR.piecebase_id==put_piece.piece_id, PieceFR.fliprot_id==put_piece.fr_id).all()
     coordinates = [
@@ -247,7 +254,7 @@ def validate_edge_condition(put_piece:PutPiece, db:Session=Depends(get_db)):
             valid = True
     return valid
 
-def validate_vertex_condition(put_piece:PutPiece, db:Session=Depends(get_db)):
+def validate_edge_condition(put_piece:PutPiece, db:Session=Depends(get_db)):
     valid = True
     piece = db.query(PieceFR).filter(PieceFR.piecebase_id==put_piece.piece_id, PieceFR.fliprot_id==put_piece.fr_id).all()
     coordinates = [
@@ -265,3 +272,16 @@ def validate_vertex_condition(put_piece:PutPiece, db:Session=Depends(get_db)):
             elif query.value == put_piece.player:
                 valid = False
     return valid
+
+def validate_first_turn(put_piece:PutPiece, db:Session=Depends(get_db)):
+    player = put_piece.player
+    piece = db.query(PieceFR).filter(PieceFR.piecebase_id==put_piece.piece_id, PieceFR.fliprot_id==put_piece.fr_id).all()
+    coordinates = [
+        {"x":put_piece.coordinate.x + e.x, "y":put_piece.coordinate.y + e.y}
+        for e in piece
+    ]
+    pc_dict = {1:(0,0), 2:(19,0), 3:(19,19), 4:(0,19)}
+    x = pc_dict[player][0]
+    y = pc_dict[player][1]
+    l = [(c["x"]==x and c["y"]==y) for c in coordinates]
+    return any(l)
