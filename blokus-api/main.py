@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 import json
 import numpy as np
 from .rotate import rotate
+import itertools
 # pieces_fr = rotate.pieces_fr
 # p_fr_base = {}
 
@@ -178,6 +179,19 @@ def put_piece_to_field(put_piece:PutPiece, db:Session=Depends(get_db)):
             status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail = f"(x,y) = {', '.join(l)} already filled"
         )
+    print(validate_edge_condition(put_piece, db))
+    vec = validate_edge_condition(put_piece, db)
+    if not vec:
+        raise HTTPException(
+            status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail = "Edge condition not satisfied"
+        )
+    vvc = validate_vertex_condition(put_piece, db)
+    if not vvc:
+        raise HTTPException(
+            status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail = "Vertex condition not satisfied"
+        )
     field_post = FieldPost(
         player=put_piece.player,
         coordinates=coordinates
@@ -198,3 +212,34 @@ def validate_existence(put_piece:PutPiece, db:Session=Depends(get_db)):
         for c in coordinates
     ]
     return existence
+
+def validate_edge_condition(put_piece:PutPiece, db:Session=Depends(get_db)):
+    valid = False
+    piece = db.query(PieceFR).filter(PieceFR.piecebase_id==put_piece.piece_id, PieceFR.fliprot_id==put_piece.fr_id).all()
+    coordinates = [
+        {"x":put_piece.coordinate.x + e.x, "y":put_piece.coordinate.y + e.y}
+        for e in piece
+    ]
+    field = db.query(Field)
+    for c_dic, dx, dy in itertools.product(coordinates,(-1,1),(-1,1)):
+        x = c_dic["x"]+dx
+        y = c_dic["y"]+dy
+        if field.filter(Field.x==x, Field.y==y).first().value == put_piece.player:
+            valid = True
+    return valid
+
+def validate_vertex_condition(put_piece:PutPiece, db:Session=Depends(get_db)):
+    valid = True
+    piece = db.query(PieceFR).filter(PieceFR.piecebase_id==put_piece.piece_id, PieceFR.fliprot_id==put_piece.fr_id).all()
+    coordinates = [
+        {"x":put_piece.coordinate.x + e.x, "y":put_piece.coordinate.y + e.y}
+        for e in piece
+    ]
+    field = db.query(Field)
+    for c_dic in coordinates:
+        for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
+            x = c_dic["x"]+dx
+            y = c_dic["y"]+dy
+            if field.filter(Field.x==x, Field.y==y).first().value == put_piece.player:
+                valid = False
+    return valid
