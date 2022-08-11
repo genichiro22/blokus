@@ -1,27 +1,31 @@
-from fastapi import FastAPI, Depends, status, Response, HTTPException
+from fastapi import FastAPI, Depends, status, Response, HTTPException, Request
 from fastapi.responses import HTMLResponse
-from .schemas import PiecePost, FieldPost, PutPiece
-from .models import PieceBase, PieceFR, Field
+from schemas import PiecePost, FieldPost, PutPiece
+from models import PieceBase, PieceFR, Field
 # from . import models
-from .database import engine, sessionLocal, Base, get_db
+from database import engine, sessionLocal, Base, get_db
 from sqlalchemy.orm import Session
+from jinja2 import Template, Environment, FileSystemLoader
 # from .piece import rotate
 import json
 import numpy as np
-from .rotate import rotate
+from rotate import rotate
 import itertools
+import requests
 # pieces_fr = rotate.pieces_fr
 # p_fr_base = {}
 
+env = Environment(loader=FileSystemLoader('./', encoding='utf8'))
+
+URL = "http://localhost:8000/"
 app = FastAPI()
 Base.metadata.create_all(engine)
-
 # @app.get("/")
 # def index():
 #     return json.dumps(p_fr_base)
 @app.get("/")
-def index():
-    return ""
+def index(request:Request):
+    return str(request.url)
 
 @app.post("/pieces/", status_code=status.HTTP_201_CREATED)
 def post_piece(piece:PiecePost, db:Session=Depends(get_db),):
@@ -115,6 +119,7 @@ def fr(piece_name:str, id:int, db:Session=Depends(get_db)):
 @app.get("/field/")
 def get_field(db:Session=Depends(get_db), status_code=status.HTTP_200_OK):
     field = db.query(Field).all()
+    # print(field)
     return field
 
 @app.get("/field/render/")
@@ -135,6 +140,17 @@ def ged_rendered_field(db:Session=Depends(get_db)):
     s = "|"+"<br>|".join(["|".join(e) for e in l])
     s2 = '<font face="ＭＳ ゴシック">' + s + '</font>'
     return HTMLResponse(content=s2, status_code=200)
+
+@app.get("/field/render/jinja2/")
+def get_rendered_field_by_jinja2(request:Request,db:Session=Depends(get_db)):
+    url = URL + "field/"
+    print(url)
+    txt = requests.get(url).json()
+    print(type(txt[0]))
+    tmpl = env.get_template('render.j2')
+    c = tmpl.render(field=txt)
+    field = db.query(Field).all()
+    return HTMLResponse(content=c)
 
 @app.post("/field/")
 def post_field(db:Session=Depends(get_db), status_code=status.HTTP_201_CREATED):
