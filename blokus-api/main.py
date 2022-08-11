@@ -149,7 +149,7 @@ def post_field(db:Session=Depends(get_db), status_code=status.HTTP_201_CREATED):
 def update_field(field_update:FieldPost, db:Session=Depends(get_db), status_code=status.HTTP_200_OK):
     player = field_update.player
     for c in field_update.coordinates:
-        current_field = db.query(Field).filter(Field.x == c.x).filter(Field.y == c.y)
+        current_field = db.query(Field).filter(Field.x == c.x, Field.y == c.y)
         field = {
             "x": c.x,
             "y": c.y,
@@ -161,17 +161,31 @@ def update_field(field_update:FieldPost, db:Session=Depends(get_db), status_code
 
 @app.put("/field/piece/")
 def put_piece_to_field(put_piece:PutPiece, db:Session=Depends(get_db)):
-    print(put_piece)
-    print(1)
+    # print(put_piece)
+    # print(1)
     piece = db.query(PieceFR).filter(PieceFR.piecebase_id==put_piece.piece_id, PieceFR.fliprot_id==put_piece.fr_id).all()
-    print(piece)
+    # print(piece)
     coordinates = [
         {"x":put_piece.coordinate.x + e.x, "y":put_piece.coordinate.y + e.y}
         for e in piece
     ]
-    print(coordinates)
+    # print(coordinates)
+    print(validate_existence(put_piece, db))
     field_post = FieldPost(
         player=put_piece.player,
         coordinates=coordinates
     )
     update_field(field_post, db)
+
+def validate_existence(put_piece:PutPiece, db:Session=Depends(get_db)):
+    piece = db.query(PieceFR).filter(PieceFR.piecebase_id==put_piece.piece_id, PieceFR.fliprot_id==put_piece.fr_id).all()
+    # print(piece)
+    coordinates = [
+        {"x":put_piece.coordinate.x + e.x, "y":put_piece.coordinate.y + e.y}
+        for e in piece
+    ]
+    existence = [
+        db.query(Field).filter(Field.x == c["x"], Field.y == c["y"]).first().value == 0
+        for c in coordinates
+    ]
+    return all(existence)
