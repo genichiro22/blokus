@@ -170,7 +170,14 @@ def put_piece_to_field(put_piece:PutPiece, db:Session=Depends(get_db)):
         for e in piece
     ]
     # print(coordinates)
-    print(validate_existence(put_piece, db))
+    ve = validate_existence(put_piece, db)
+    if not all(all(e.values()) for e in ve):
+        l = [str(list(e.keys())[0]) for e in ve if not all(e.values())]
+        print(l)
+        raise HTTPException(
+            status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail = f"(x,y) = {', '.join(l)} already filled"
+        )
     field_post = FieldPost(
         player=put_piece.player,
         coordinates=coordinates
@@ -185,7 +192,9 @@ def validate_existence(put_piece:PutPiece, db:Session=Depends(get_db)):
         for e in piece
     ]
     existence = [
-        db.query(Field).filter(Field.x == c["x"], Field.y == c["y"]).first().value == 0
+        {
+            (c["x"], c["y"]): db.query(Field).filter(Field.x == c["x"], Field.y == c["y"]).first().value == 0
+        }
         for c in coordinates
     ]
-    return all(existence)
+    return existence
