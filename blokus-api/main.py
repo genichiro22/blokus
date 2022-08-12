@@ -121,7 +121,7 @@ def get_field(db:Session=Depends(get_db), status_code=status.HTTP_200_OK):
     field = db.query(Field).all()
     # print(field)
     return field
-
+'''
 @app.get("/field/render/")
 def ged_rendered_field(db:Session=Depends(get_db)):
     l = []
@@ -140,8 +140,9 @@ def ged_rendered_field(db:Session=Depends(get_db)):
     s = "|"+"<br>|".join(["|".join(e) for e in l])
     s2 = '<font face="ＭＳ ゴシック">' + s + '</font>'
     return HTMLResponse(content=s2, status_code=200)
+'''
 
-@app.get("/field/render/jinja2/")
+@app.get("/field/render/")
 def get_rendered_field_by_jinja2(request:Request,db:Session=Depends(get_db)):
     url = URL + "field/"
     txt = requests.get(url).json()
