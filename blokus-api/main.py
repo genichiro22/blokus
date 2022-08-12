@@ -144,12 +144,9 @@ def ged_rendered_field(db:Session=Depends(get_db)):
 @app.get("/field/render/jinja2/")
 def get_rendered_field_by_jinja2(request:Request,db:Session=Depends(get_db)):
     url = URL + "field/"
-    print(url)
     txt = requests.get(url).json()
-    print(type(txt[0]))
     tmpl = env.get_template('render.j2')
     c = tmpl.render(field=txt)
-    field = db.query(Field).all()
     return HTMLResponse(content=c)
 
 @app.post("/field/")

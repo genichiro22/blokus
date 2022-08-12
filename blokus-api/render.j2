@@ -5,10 +5,34 @@
     <script>
         $(document).ready(function() {
             var a_canvas = $("#a_canvas")[0],
-                ctx = a_canvas.getContext("2d");
+            ctx = a_canvas.getContext("2d");
 {% for c in field %}
-            ctx.fillStyle = "rgb(0,0,{{ 60*c.value }})";
-            ctx.fillRect({{ 20*c.x }}, {{ 20*c.y }}, 20, 20);
+{% if c.value == 0 %}
+            ctx.fillStyle = "white";
+{% elif c.value == 1 %}
+            ctx.fillStyle = "red"
+{% elif c.value == 2 %}
+            ctx.fillStyle = "green"
+{% elif c.value == 3 %}
+            ctx.fillStyle = "blue"
+{% elif c.value == 4 %}
+            ctx.fillStyle = "yellow"
+{% endif %}
+            ctx.fillRect({{ 20*(1+c.x) }}, {{ 20*(1+c.y) }}, 20, 20);
+            ctx.strokeStyle = "#DDD";
+            ctx.lineWidth = 1;
+            ctx.strokeRect({{ 20*(c.x + 1) }}, {{ 20*(c.y + 1) }}, 20, 20);
+{% endfor %}
+            ctx.fillStyle = "black";
+{% for i in range(20) %}
+            ctx.fillText({{ i }}, 1,{{ 34+20*i }});
+            ctx.fillText({{ i }}, {{ 24 + 20*i }}, 16);
+{% endfor %}
+{% for i in range(4) %}
+{% for j in range(4) %}
+            ctx.strokeStyle = "#AAA";
+            ctx.strokeRect({{ 20+100*i }}, {{ 20+100*j }},100,100);
+{% endfor %}
 {% endfor %}
         });
     </script>
