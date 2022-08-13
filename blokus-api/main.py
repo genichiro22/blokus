@@ -1,7 +1,7 @@
-from fastapi import FastAPI, Depends, status, Response, HTTPException, Request
+from fastapi import FastAPI, Depends, Query, status, Response, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from schemas import PiecePost, FieldPost, PutPiece
-from models import PieceBase, PieceFR, Field
+from models import PieceBase, PieceFR, Field, Player
 # from . import models
 from database import engine, sessionLocal, Base, get_db
 from sqlalchemy.orm import Session
@@ -185,6 +185,22 @@ def put_piece_to_field(put_piece:PutPiece, db:Session=Depends(get_db)):
         for e in piece
     ]
     # print(coordinates)
+    validate_whole(put_piece, db)
+    field_post = FieldPost(
+        player=put_piece.player,
+        coordinates=coordinates
+    )
+    update_field(field_post, db)
+    query = db.query(Player).filter(Player.id == put_piece.player)
+    player = query.first()
+    update_player = {
+        # "id": player.id,
+        "turn": player.turn+1
+    }
+    query.update(update_player)
+    db.commit()
+
+def validate_whole(put_piece:PutPiece, db:Session=Depends(get_db)):
     if not validate_inner_field(put_piece,db):
         raise HTTPException(
             status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -218,11 +234,6 @@ def put_piece_to_field(put_piece:PutPiece, db:Session=Depends(get_db)):
                 status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail = "Vertex condition not satisfied"
             )
-    field_post = FieldPost(
-        player=put_piece.player,
-        coordinates=coordinates
-    )
-    update_field(field_post, db)
 
 def validate_inner_field(put_piece:PutPiece, db:Session=Depends(get_db)):
     # valid = True
@@ -232,7 +243,7 @@ def validate_inner_field(put_piece:PutPiece, db:Session=Depends(get_db)):
         {"x":put_piece.coordinate.x + e.x, "y":put_piece.coordinate.y + e.y}
         for e in piece
     ]
-    print(coordinates)
+    # print(coordinates)
     return not any(any((c["x"]>=20,c["y"]>=20)) for c in coordinates)
 
 def validate_existence(put_piece:PutPiece, db:Session=Depends(get_db)):
