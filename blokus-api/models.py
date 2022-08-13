@@ -25,3 +25,10 @@ class Field(Base):
     x = Column(Integer)
     y = Column(Integer)
     value = Column(Integer, default=0)
+
+class Player(Base):
+    __tablename__ = "player"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+    turn = Column(Integer, default=0)
+    
