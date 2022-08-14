@@ -193,14 +193,16 @@ def put_piece_to_field(put_piece:PutPiece, db:Session=Depends(get_db)):
     update_field(field_post, db)
     query = db.query(Player).filter(Player.id == put_piece.player)
     player = query.first()
-    update_player = {
-        # "id": player.id,
-        "turn": player.turn+1
-    }
+    update_player = {"turn": player.turn+1}
     query.update(update_player)
+    db.query(PlayerPieces).filter(
+        PlayerPieces.player_id==put_piece.player,
+        PlayerPieces.piecebase_id==put_piece.piece_id
+    ).delete()
     db.commit()
 
 def validate_whole(put_piece:PutPiece, db:Session=Depends(get_db)):
+    validate_posession(put_piece, db)
     if not validate_inner_field(put_piece,db):
         raise HTTPException(
             status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -311,6 +313,19 @@ def validate_first_turn(put_piece:PutPiece, db:Session=Depends(get_db)):
     y = pc_dict[player][1]
     l = [(c["x"]==x and c["y"]==y) for c in coordinates]
     return any(l)
+
+def validate_posession(put_piece:PutPiece, db:Session=Depends(get_db)):
+    piece_id = put_piece.piece_id
+    player = put_piece.player
+    query = db.query(PlayerPieces).filter(
+        PlayerPieces.player_id == player,
+        PlayerPieces.piecebase_id == piece_id
+    )
+    if not query.all():
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail = f"You dont have piece with the id {piece_id}"
+        )
 
 @app.post("/player/pieces/")
 def give_all_pieces_to_player(db:Session=Depends(get_db)):
