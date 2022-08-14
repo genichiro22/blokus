@@ -37,3 +37,8 @@ class PlayerPieces(Base):
     id = Column(Integer, primary_key=True, index=True)
     player_id = Column(Integer, ForeignKey('player.id'))
     piecebase_id = Column(Integer, ForeignKey('piece_base.id'))
+
+class TurnControl(Base):
+    __tablename__ = "turn_control"
+    id = Column(Integer, primary_key=True, index=True)
+    current_player_id = Column(Integer, ForeignKey('player.id'))
