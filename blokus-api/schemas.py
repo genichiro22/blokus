@@ -21,7 +21,7 @@ class FieldPost(BaseModel):
 
 class PutPiece(BaseModel):
     player: int
-    turn: int
+    # turn: int
     piece_id: int
     fr_id: int
     coordinate: Coordinate

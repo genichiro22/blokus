@@ -215,7 +215,8 @@ def validate_whole(put_piece:PutPiece, db:Session=Depends(get_db)):
             detail = f"(x,y) = {', '.join(l)} already filled"
         )
     # print(validate_edge_condition(put_piece, db))
-    if put_piece.turn==0:
+    player = db.query(Player).filter(Player.id == put_piece.player).first()
+    if player.turn==0:
         if not validate_first_turn(put_piece, db):
             raise HTTPException(
                 status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
