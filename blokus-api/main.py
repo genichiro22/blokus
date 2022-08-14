@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, Query, status, Response, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from schemas import PiecePost, FieldPost, PutPiece
-from models import PieceBase, PieceFR, Field, Player
+from models import PieceBase, PieceFR, Field, Player, PlayerPieces
 # from . import models
 from database import engine, sessionLocal, Base, get_db
 from sqlalchemy.orm import Session
@@ -311,3 +311,17 @@ def validate_first_turn(put_piece:PutPiece, db:Session=Depends(get_db)):
     y = pc_dict[player][1]
     l = [(c["x"]==x and c["y"]==y) for c in coordinates]
     return any(l)
+
+@app.post("/player/pieces/")
+def give_all_pieces_to_player(db:Session=Depends(get_db)):
+    players = db.query(Player).all()
+    pieces = db.query(PieceBase).all()
+    for player, piece in itertools.product(players, pieces):
+        e = PlayerPieces(
+            player_id = player.id,
+            piecebase_id = piece.id
+        )
+        db.add(e)
+    db.commit()
+    db.refresh(e)
+    return "done"
