@@ -40,5 +40,23 @@
 <body>
     <canvas width="450" height="450" id="a_canvas">
     </canvas>
+    <canvas width="450" height="50" style="background-color:#ccc;" id="b_canvas">
+    </canvas>
+    <script>
+    function b_func() {
+        var cs_a = document.getElementById('a_canvas');
+        var cs_b = document.getElementById('b_canvas');
+        var ctx = cs_b.getContext('2d');
+        function onClick(e) {
+            draw();
+        }
+        function draw() {
+            ctx.fillStyle = "black";
+            ctx.fillRect(10,10,5,5);
+        }
+        cs_a.addEventListener('click', onClick);
+    }
+    b_func();
+    </script>
 </body>
 </html>
