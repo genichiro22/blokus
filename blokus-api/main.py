@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, Query, status, Response, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from schemas import PiecePost, FieldPost, PutPiece
-from models import PieceBase, PieceFR, Field, Player, PlayerPieces
+from models import PieceBase, PieceFR, Field, Player, PlayerPieces, TurnControl
 # from . import models
 from database import engine, sessionLocal, Base, get_db
 from sqlalchemy.orm import Session
@@ -199,9 +199,12 @@ def put_piece_to_field(put_piece:PutPiece, db:Session=Depends(get_db)):
         PlayerPieces.player_id==put_piece.player,
         PlayerPieces.piecebase_id==put_piece.piece_id
     ).delete()
+    new_turn = {"current_player_id": put_piece.player%4+1}
+    db.query(TurnControl).update(new_turn)
     db.commit()
 
 def validate_whole(put_piece:PutPiece, db:Session=Depends(get_db)):
+    validate_turn(put_piece, db)
     validate_posession(put_piece, db)
     if not validate_inner_field(put_piece,db):
         raise HTTPException(
@@ -325,6 +328,14 @@ def validate_posession(put_piece:PutPiece, db:Session=Depends(get_db)):
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail = f"You dont have piece with the id {piece_id}"
+        )
+
+def validate_turn(put_piece:PutPiece, db:Session=Depends(get_db)):
+    current_player = db.query(TurnControl).filter(TurnControl.current_player_id == put_piece.player).all()
+    if not current_player:
+        raise HTTPException(
+            status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail = f"Its not your turn"
         )
 
 @app.post("/player/pieces/")
