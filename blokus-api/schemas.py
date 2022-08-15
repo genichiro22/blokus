@@ -27,3 +27,10 @@ class PutPiece(BaseModel):
     coordinate: Coordinate
     class Config:
         orm_mode=True
+
+class PlayerPost(BaseModel):
+    name: str
+    turn: int
+    is_current: bool
+    class Config:
+        orm_mode=True

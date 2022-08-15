@@ -31,14 +31,10 @@ class Player(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     turn = Column(Integer, default=0)
+    is_current_player = Column(Boolean, default=False)
 
 class PlayerPieces(Base):
     __tablename__ = "player_pieces"
     id = Column(Integer, primary_key=True, index=True)
     player_id = Column(Integer, ForeignKey('player.id'))
     piecebase_id = Column(Integer, ForeignKey('piece_base.id'))
-
-class TurnControl(Base):
-    __tablename__ = "turn_control"
-    id = Column(Integer, primary_key=True, index=True)
-    current_player_id = Column(Integer, ForeignKey('player.id'))

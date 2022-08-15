@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, Query, status, Response, HTTPException, Request
 from fastapi.responses import HTMLResponse
-from schemas import PiecePost, FieldPost, PutPiece
-from models import PieceBase, PieceFR, Field, Player, PlayerPieces, TurnControl
+from schemas import PiecePost, FieldPost, PutPiece, PlayerPost
+from models import PieceBase, PieceFR, Field, Player, PlayerPieces
 # from . import models
 from database import engine, sessionLocal, Base, get_db
 from sqlalchemy.orm import Session
@@ -193,14 +193,25 @@ def put_piece_to_field(put_piece:PutPiece, db:Session=Depends(get_db)):
     update_field(field_post, db)
     query = db.query(Player).filter(Player.id == put_piece.player)
     player = query.first()
-    update_player = {"turn": player.turn+1}
+    update_player = {"turn": player.turn+1, "is_current_player": False}
     query.update(update_player)
+    db.query(Player).filter(Player.id == put_piece.player%4+1).update({"is_current_player": True})
     db.query(PlayerPieces).filter(
         PlayerPieces.player_id==put_piece.player,
         PlayerPieces.piecebase_id==put_piece.piece_id
     ).delete()
-    new_turn = {"current_player_id": put_piece.player%4+1}
-    db.query(TurnControl).update(new_turn)
+    # new_turn = {"current_player_id": put_piece.player%4+1}
+    # db.query(TurnControl).update(new_turn)
+    db.commit()
+
+@app.post("/player/")
+def create_player(player_post:PlayerPost, db:Session=Depends(get_db)):
+    new_player = Player(
+        name = player_post.name,
+        turn = player_post.turn,
+        is_current_player = player_post.is_current,
+    )
+    db.add(new_player)
     db.commit()
 
 def validate_whole(put_piece:PutPiece, db:Session=Depends(get_db)):
@@ -331,7 +342,10 @@ def validate_posession(put_piece:PutPiece, db:Session=Depends(get_db)):
         )
 
 def validate_turn(put_piece:PutPiece, db:Session=Depends(get_db)):
-    current_player = db.query(TurnControl).filter(TurnControl.current_player_id == put_piece.player).all()
+    current_player = db.query(Player).filter(
+        Player.id == put_piece.player,
+        Player.is_current_player == True
+    ).all()
     if not current_player:
         raise HTTPException(
             status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,

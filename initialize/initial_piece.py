@@ -21,3 +21,15 @@ for key in d.keys():
 requests.post(url+"pieces/all/")
 
 requests.post(url+"field/")
+
+i = 0
+for name in ["isshin", "genichiro", "sekiro", "fukuro"]:
+    body = {
+        "name": name,
+        "turn": 0,
+        "is_current": (i==0)
+    }
+    requests.post(url+"player/", json=body)
+    i = 1
+
+requests.post(url+"player/pieces/")
