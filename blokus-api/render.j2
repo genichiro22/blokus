@@ -36,51 +36,6 @@
 {% endfor %}
         });
     </script>
-    <style>
-.container {  display: grid;
-  grid-template-columns: 450px auto;
-  grid-template-rows: 450px auto;
-  gap: 2px 2px;
-  grid-auto-flow: row;
-  grid-template-areas:
-    "field pieces"
-    "fliprot commit";
-}
-
-.field { grid-area: field; }
-
-.fliprot {  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 5px 5px;
-  grid-auto-flow: row;
-  grid-template-areas:
-    "f0 f1 f2 f3"
-    "f4 f5 f6 f7";
-  grid-area: fliprot;
-}
-
-.f0 { grid-area: f0; }
-
-.f1 { grid-area: f1; }
-
-.f2 { grid-area: f2; }
-
-.f3 { grid-area: f3; }
-
-.f4 { grid-area: f4; }
-
-.f5 { grid-area: f5; }
-
-.f6 { grid-area: f6; }
-
-.f7 { grid-area: f7; }
-
-.pieces { grid-area: pieces; }
-
-.commit { grid-area: commit; }
-
-    </style>
 </head>
 <body>
     <div class="container">
@@ -89,8 +44,29 @@
     </canvas>
     </div>
     <div class="commit">
-    <canvas width="450" height="40" style="background-color:#ccc;" id="b_canvas">
-    </canvas>
+        <form action="field/piece/" method="post" class="commit-form">
+            <div class="commit-form">
+                <label for="player">player:</label>
+                <input type="number" name="player" id="player" required>
+            </div>
+            <div class="commit-form">
+                <label for="piece-id">piece-id:</label>
+                <input type="number" name="piece-id" id="piece-id" required>
+            </div>
+            <div class="commit-form">
+                <label for="fliprot-id">fliprot-id:</label>
+                <input type="number" name="fliprot-id" id="fliprot-id" required>
+            </div>
+            <div class="x">
+                <label for="x">x:</label>
+                <input type="number" name="x" id="x" required>
+            </div>
+            <div class="y">
+                <label for="y">y:</label>
+                <input type="number" name="y" id="y" required>
+            </div>
+            <input type="submit" value="送信">
+        </form>
     </div>
     <div class="fliprot">
 {% for i in range(8) %}

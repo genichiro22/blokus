@@ -33,3 +33,30 @@ for name in ["isshin", "genichiro", "sekiro", "fukuro"]:
     i = 1
 
 requests.post(url+"player/pieces/")
+
+body = {
+    "player": 1,
+    "piece_id": 1,
+    "fr_id": 0,
+    "coordinate": {
+        "x": 0,
+        "y": 19
+    }
+}
+
+requests.post(url+"field/piece/", body)
+body["player"]+=1
+body["coordinate"]["x"]=19
+requests.post(url+"field/piece/", body)
+body["player"]+=1
+body["coordinate"]["y"]=19
+requests.post(url+"field/piece/", body)
+body["player"]+=1
+body["coordinate"]["x"]=0
+requests.post(url+"field/piece/", body)
+body["player"]=1
+body["coordinate"]["x"]=1
+body["coordinate"]["y"]=1
+requests.post(url+"field/piece/", body)
+body["piece_id"]=2
+requests.post(url+"field/piece/", body)
