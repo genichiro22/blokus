@@ -25,9 +25,10 @@ app.include_router(piece.router)
 # @app.get("/")
 # def index():
 #     return json.dumps(p_fr_base)
-@app.get("/")
-def index(request:Request):
-    return str(request.url)
+
+# @app.get("/")
+# def index(request:Request):
+#     return str(request.url)
 
 
 
@@ -37,7 +38,7 @@ def get_field(db:Session=Depends(get_db), status_code=status.HTTP_200_OK):
     # print(field)
     return field
 
-@app.get("/field/render/")
+@app.get("/")
 def get_rendered_field_by_jinja2(request:Request,db:Session=Depends(get_db)):
     url = URL + "field/"
     txt = requests.get(url).json()
