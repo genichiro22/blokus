@@ -36,22 +36,100 @@
 {% endfor %}
         });
     </script>
+    <style>
+.container {  display: grid;
+  grid-template-columns: 450px auto;
+  grid-template-rows: 450px auto;
+  gap: 2px 2px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "field pieces"
+    "fliprot commit";
+}
+
+.field { grid-area: field; }
+
+.fliprot {  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 5px 5px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "f0 f1 f2 f3"
+    "f4 f5 f6 f7";
+  grid-area: fliprot;
+}
+
+.f0 { grid-area: f0; }
+
+.f1 { grid-area: f1; }
+
+.f2 { grid-area: f2; }
+
+.f3 { grid-area: f3; }
+
+.f4 { grid-area: f4; }
+
+.f5 { grid-area: f5; }
+
+.f6 { grid-area: f6; }
+
+.f7 { grid-area: f7; }
+
+.pieces { grid-area: pieces; }
+
+.commit { grid-area: commit; }
+
+    </style>
 </head>
 <body>
-    <canvas width="450" height="450" id="a_canvas">
+    <div class="container">
+    <div class="field">
+    <canvas width="450" height="430" id="a_canvas">
     </canvas>
-    <canvas width="450" height="50" style="background-color:#ccc;" id="b_canvas">
+    </div>
+    <div class="commit">
+    <canvas width="450" height="40" style="background-color:#ccc;" id="b_canvas">
     </canvas>
+    </div>
+    <div class="fliprot">
+{% for i in range(8) %}
+    <div class="f{{ i }}">
+    <canvas width="100" height="100" style="background-color:#ccc;" id="{{ i }}_fliprot">
+    </canvas>
+    </div>
+{% endfor %}
+    </div>
+    <div class="pieces">
+{% for i in range(21) %}
+    <div class="p{{ i }}">
+    <canvas width="100" height="100" style="background-color:#ccc;" id="{{ i }}_base">
+    </canvas>
+    </div>
+{% endfor %}
+    </div>
+    </div>
     <script>
     function b_func() {
         var cs_a = document.getElementById('a_canvas');
         var cs_b = document.getElementById('b_canvas');
-        var ctx = cs_b.getContext('2d');
+        var ctx_b = cs_b.getContext('2d');
+        var ctx_a = cs_a.getContext('2d');
         function onClick(e) {
-            draw();
+            var button = e.target.getBoundingClientRect();
+	        mouseX = e.clientX - button.left;
+    		mouseY = e.clientY - button.top;
+            x = Math.floor(mouseX/20) - 1
+            y = Math.floor(mouseY/20) - 1
+            draw(x, y);
         }
-        function draw() {
-            ctx.fillText("5000兆",10,10);
+        function draw(s1, s2) {
+            ctx_b.clearRect(10,0,400,50);
+            ctx_b.fillText(x,100,15);
+            ctx_b.fillText(y,150,15);
+        }
+        function drawRect(x, y) {
+            ctx_a.
         }
         cs_a.addEventListener('click', onClick);
     }
