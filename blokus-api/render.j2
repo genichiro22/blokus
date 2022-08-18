@@ -111,5 +111,19 @@
     }
     b_func();
     </script>
+    <script>
+        const btn = document.querySelector("body > div > div.commit > form > input[type=submit]");
+        const player = document.querySelector("#player");
+        const pieceId = document.querySelector("#piece-id");
+        const flipRotId = document.querySelector("#fliprot-id");
+        const x = document.querySelector("#x");
+        const y = document.querySelector("#y");
+        function sendData( data ) {
+            console.log( 'sending data' );
+            console.log( player.value );
+            const XHR = new XMLHttpRequest();
+        }
+        btn.addEventListener('click', sendData);
+    </script>
 </body>
 </html>
