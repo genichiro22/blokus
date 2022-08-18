@@ -40,23 +40,23 @@ body = {
     "fr_id": 0,
     "coordinate": {
         "x": 0,
-        "y": 19
+        "y": 0
     }
 }
 
-requests.post(url+"field/piece/", body)
+requests.put(url+"field/piece/", json=body)
 body["player"]+=1
 body["coordinate"]["x"]=19
-requests.post(url+"field/piece/", body)
+requests.put(url+"field/piece/", json=body)
 body["player"]+=1
 body["coordinate"]["y"]=19
-requests.post(url+"field/piece/", body)
+requests.put(url+"field/piece/", json=body)
 body["player"]+=1
 body["coordinate"]["x"]=0
-requests.post(url+"field/piece/", body)
+requests.put(url+"field/piece/", json=body)
 body["player"]=1
 body["coordinate"]["x"]=1
 body["coordinate"]["y"]=1
-requests.post(url+"field/piece/", body)
+requests.put(url+"field/piece/", json=body)
 body["piece_id"]=2
-requests.post(url+"field/piece/", body)
+requests.put(url+"field/piece/", json=body)
