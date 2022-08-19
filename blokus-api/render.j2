@@ -44,7 +44,7 @@
     </canvas>
     </div>
     <div class="commit">
-        <form action="field/piece/" method="post" class="commit-form">
+        <form class="commit-form" method="" action="" onsubmit="return false">
             <div class="commit-form">
                 <label for="player">player:</label>
                 <input type="number" name="player" id="player" required>
@@ -105,11 +105,11 @@
             ctx_b.fillText(y,150,15);
         }
         function drawRect(x, y) {
-            ctx_a.
+            console.log("dummy");
         }
         cs_a.addEventListener('click', onClick);
     }
-    b_func();
+    
     </script>
     <script>
         const btn = document.querySelector("body > div > div.commit > form > input[type=submit]");
@@ -121,7 +121,19 @@
         function sendData( data ) {
             console.log( 'sending data' );
             console.log( player.value );
+            const body = {
+                "player": Number(player.value),
+                "piece_id": Number(pieceId.value),
+                "fr_id": Number(flipRotId.value),
+                "coordinate": {
+                    "x": Number(x.value),
+                    "y": Number(y.value)
+                }
+            }
+            console.log(body)
             const XHR = new XMLHttpRequest();
+            XHR.open("PUT", "/field/piece");
+            XHR.send(body);
         }
         btn.addEventListener('click', sendData);
     </script>
