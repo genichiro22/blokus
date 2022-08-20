@@ -130,10 +130,12 @@
                     "y": Number(y.value)
                 }
             }
-            console.log(body)
+            body_s = JSON.stringify(body)
+            console.log(body_s);
             const XHR = new XMLHttpRequest();
             XHR.open("PUT", "/field/piece");
-            XHR.send(body);
+            XHR.setRequestHeader("Content-Type", "application/json");
+            XHR.send(body_s);
         }
         btn.addEventListener('click', sendData);
     </script>
