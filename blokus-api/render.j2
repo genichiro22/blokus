@@ -119,8 +119,6 @@
         const x = document.querySelector("#x");
         const y = document.querySelector("#y");
         function sendData( data ) {
-            console.log( 'sending data' );
-            console.log( player.value );
             const body = {
                 "player": Number(player.value),
                 "piece_id": Number(pieceId.value),
@@ -131,10 +129,17 @@
                 }
             }
             body_s = JSON.stringify(body)
-            console.log(body_s);
             const XHR = new XMLHttpRequest();
             XHR.open("PUT", "/field/piece");
             XHR.setRequestHeader("Content-Type", "application/json");
+            XHR.onload = function () {
+                console.log('DONE: ', XHR.status);
+                if (XHR.status===200) {
+                    window.location.reload();
+                } else if (XHR.status===422) {
+                    window.alert(XHR.response);
+                }
+            };
             XHR.send(body_s);
         }
         btn.addEventListener('click', sendData);
