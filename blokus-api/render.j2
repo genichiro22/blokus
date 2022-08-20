@@ -87,37 +87,29 @@
     </div>
     <script>
     function b_func() {
-        var cs_a = document.getElementById('a_canvas');
-        var cs_b = document.getElementById('b_canvas');
-        var ctx_b = cs_b.getContext('2d');
-        var ctx_a = cs_a.getContext('2d');
         function onClick(e) {
-            var button = e.target.getBoundingClientRect();
-	        mouseX = e.clientX - button.left;
-    		mouseY = e.clientY - button.top;
-            x = Math.floor(mouseX/20) - 1
-            y = Math.floor(mouseY/20) - 1
-            draw(x, y);
+            let button = e.target.getBoundingClientRect();
+	        let mouseX = e.clientX - button.left;
+    		let mouseY = e.clientY - button.top;
+            let x = Math.floor(mouseX/20) - 1
+            let y = Math.floor(mouseY/20) - 1
+            inputXy(x, y);
         }
-        function draw(s1, s2) {
-            ctx_b.clearRect(10,0,400,50);
-            ctx_b.fillText(x,100,15);
-            ctx_b.fillText(y,150,15);
+        function inputXy(s1, s2) {
+            document.querySelector("#x").value = s1;
+            document.querySelector("#y").value = s2;
         }
-        function drawRect(x, y) {
-            console.log("dummy");
-        }
-        cs_a.addEventListener('click', onClick);
+        a_canvas.addEventListener('click', onClick);
     }
-    
+    b_func();
     </script>
     <script>
         const btn = document.querySelector("body > div > div.commit > form > input[type=submit]");
         const player = document.querySelector("#player");
         const pieceId = document.querySelector("#piece-id");
         const flipRotId = document.querySelector("#fliprot-id");
-        const x = document.querySelector("#x");
-        const y = document.querySelector("#y");
+        let x = document.querySelector("#x");
+        let y = document.querySelector("#y");
         function sendData( data ) {
             const body = {
                 "player": Number(player.value),
