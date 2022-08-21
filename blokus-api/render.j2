@@ -3,8 +3,18 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script>
+        playerColor = {
+            0: "white",
+            1: "red",
+            2: "green",
+            3: "blue",
+            4: "yellow"
+        };
+        x0 = 20;
+        y0 = 20;
+        squareLength = 20;
         $(document).ready(function() {
-            var a_canvas = $("#a_canvas")[0],
+            a_canvas = $("#a_canvas")[0];
             ctx = a_canvas.getContext("2d");
 {% for c in field %}
 {% if c.value == 0 %}
@@ -35,6 +45,36 @@
 {% endfor %}
 {% endfor %}
         });
+        function test(x,y,player) {
+            console.log("test called");
+            const x1 = x0+squareLength*x;
+            const y1 = y0+squareLength*y;
+            ctx.fillStyle = playerColor[player];
+            ctx.fillRect(x1,y1,squareLength,squareLength);
+            ctx.strokeStyle = "#DDD"
+            ctx.strokeRect(x1,y1,squareLength,squareLength)
+        }
+        function fillAllRect() {
+            let XHR = new XMLHttpRequest();
+            XHR.open("GET", "/field/");
+            XHR.setRequestHeader("Content-Type", "application/json");
+            XHR.send();
+            console.log(XHR.response);
+        }
+        function bigStroke(n,m) {
+            ctx.strokeStyle = "#000";
+            const bigSquareLength = squareLength*5
+            const x1 = x0 + bigSquareLength * n;
+            const y1 = y0 + bigSquareLength * m;
+            ctx.strokeRect(x1,y1,bigSquareLength,bigSquareLength);
+        }
+        function allBigStroke() {
+            for (let i = 0; i<4; i++) {
+                for (let j=0; j<4; j++) {
+                    bigStroke(i,j);
+                }
+            }
+        }
     </script>
 </head>
 <body>
@@ -111,7 +151,7 @@
         let x = document.querySelector("#x");
         let y = document.querySelector("#y");
         function sendData( data ) {
-            const body = {
+            let body = {
                 "player": Number(player.value),
                 "piece_id": Number(pieceId.value),
                 "fr_id": Number(flipRotId.value),
@@ -120,8 +160,8 @@
                     "y": Number(y.value)
                 }
             }
-            body_s = JSON.stringify(body)
-            const XHR = new XMLHttpRequest();
+            let body_s = JSON.stringify(body)
+            let XHR = new XMLHttpRequest();
             XHR.open("PUT", "/field/piece");
             XHR.setRequestHeader("Content-Type", "application/json");
             XHR.onload = function () {
@@ -130,6 +170,9 @@
                     window.location.reload();
                 } else if (XHR.status===422) {
                     window.alert(XHR.response);
+                    test(0,0,3);
+                    fillAllRect();
+                    allBigStroke();
                 }
             };
             XHR.send(body_s);
