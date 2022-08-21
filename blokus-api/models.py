@@ -30,6 +30,7 @@ class Player(Base):
     __tablename__ = "player"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
+    raw_pwd = Column(String)
     turn = Column(Integer, default=0)
     is_current_player = Column(Boolean, default=False)
 

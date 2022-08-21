@@ -30,7 +30,7 @@ class PutPiece(BaseModel):
 
 class PlayerPost(BaseModel):
     name: str
-    turn: int
-    is_current: bool
+    pwd: str
+    is_first: bool
     class Config:
         orm_mode=True

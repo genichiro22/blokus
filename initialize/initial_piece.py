@@ -26,11 +26,12 @@ i = 0
 for name in ["isshin", "genichiro", "sekiro", "fukuro"]:
     body = {
         "name": name,
+        "pwd": name + "1234",
         "turn": 0,
-        "is_current": (i==0)
+        "is_first": (i==0)
     }
     requests.post(url+"player/", json=body)
-    i = 1
+    i=1
 
 requests.post(url+"player/pieces/")
 

@@ -6,8 +6,9 @@ import itertools
 def create(player_post:PlayerPost, db:Session):
     new_player = models.Player(
         name = player_post.name,
-        turn = player_post.turn,
-        is_current_player = player_post.is_current,
+        turn = 0,
+        raw_pwd = player_post.pwd,
+        is_current_player = player_post.is_first,
     )
     db.add(new_player)
     db.commit()
