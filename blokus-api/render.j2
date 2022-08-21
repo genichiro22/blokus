@@ -129,7 +129,7 @@
             }
             let body_s = JSON.stringify(body)
             let XHR = new XMLHttpRequest();
-            XHR.open("PUT", "/field/piece");
+            XHR.open("PUT", "/field/piece/");
             XHR.setRequestHeader("Content-Type", "application/json");
             XHR.onload = function () {
                 console.log('DONE: ', XHR.status);
