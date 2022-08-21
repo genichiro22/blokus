@@ -17,8 +17,8 @@
             a_canvas = $("#a_canvas")[0];
             ctx = a_canvas.getContext("2d");
             for (let i = 0; i<20; i++) {
-                ctx.fillText(i, 1,34+squareLength*i);
-                ctx.fillText(i,24 + squareLength*i, 16);
+                ctx.fillText(i, 1,y0+14+squareLength*i);
+                ctx.fillText(i,x0+4 + squareLength*i, 16);
             }
             fillAllRect();
         });
@@ -132,7 +132,6 @@
             XHR.open("PUT", "/field/piece/");
             XHR.setRequestHeader("Content-Type", "application/json");
             XHR.onload = function () {
-                console.log('DONE: ', XHR.status);
                 if (XHR.status===200) {
                     fillAllRect();
                 } else if (XHR.status===422) {
