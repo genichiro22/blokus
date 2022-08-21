@@ -45,7 +45,7 @@
 {% endfor %}
 {% endfor %}
         });
-        function test(x,y,player) {
+        function fillOneRect(x,y,player) {
             console.log("test called");
             const x1 = x0+squareLength*x;
             const y1 = y0+squareLength*y;
@@ -58,8 +58,16 @@
             let XHR = new XMLHttpRequest();
             XHR.open("GET", "/field/");
             XHR.setRequestHeader("Content-Type", "application/json");
+            XHR.onload = function () {
+                res = XHR.response;
+                field = JSON.parse(res);
+                for (const e of field) {
+                    console.log(e);
+                    fillOneRect(e.x,e.y,e.value);
+                }
+                allBigStroke();
+            };
             XHR.send();
-            console.log(XHR.response);
         }
         function bigStroke(n,m) {
             ctx.strokeStyle = "#000";
@@ -74,6 +82,7 @@
                     bigStroke(i,j);
                 }
             }
+            console.log("all big stroke");
         }
     </script>
 </head>
@@ -167,12 +176,9 @@
             XHR.onload = function () {
                 console.log('DONE: ', XHR.status);
                 if (XHR.status===200) {
-                    window.location.reload();
+                    fillAllRect();
                 } else if (XHR.status===422) {
                     window.alert(XHR.response);
-                    test(0,0,3);
-                    fillAllRect();
-                    allBigStroke();
                 }
             };
             XHR.send(body_s);
