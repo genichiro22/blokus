@@ -17,8 +17,8 @@
             a_canvas = $("#a_canvas")[0];
             ctx = a_canvas.getContext("2d");
             for (let i = 0; i<20; i++) {
-                ctx.fillText(i, 1,y0+14+squareLength*i);
-                ctx.fillText(i,x0+4 + squareLength*i, 16);
+                ctx.fillText(i, x0-19,y0+14+squareLength*i);
+                ctx.fillText(i,x0+4 + squareLength*i, y0-4);
             }
             fillAllRect();
         });
@@ -98,8 +98,8 @@
                 let button = e.target.getBoundingClientRect();
                 let mouseX = e.clientX - button.left;
                 let mouseY = e.clientY - button.top;
-                let x = Math.floor(mouseX/20) - 1
-                let y = Math.floor(mouseY/20) - 1
+                let x = Math.floor((mouseX-x0)/squareLength)
+                let y = Math.floor((mouseY-y0)/squareLength)
                 inputXy(x, y);
             }
             function inputXy(s1, s2) {
