@@ -23,7 +23,6 @@
             fillAllRect();
         });
         function fillOneRect(x,y,player) {
-            console.log("test called");
             const x1 = x0+squareLength*x;
             const y1 = y0+squareLength*y;
             ctx.fillStyle = playerColor[player];
@@ -39,7 +38,6 @@
                 res = XHR.response;
                 field = JSON.parse(res);
                 for (const e of field) {
-                    console.log(e);
                     fillOneRect(e.x,e.y,e.value);
                 }
                 allBigStroke();
@@ -59,75 +57,58 @@
                     bigStroke(i,j);
                 }
             }
-            console.log("all big stroke");
         }
     </script>
 </head>
 <body>
     <div class="container">
-    <div class="field">
-    <canvas width="450" height="430" id="a_canvas">
-    </canvas>
-    </div>
-    <div class="commit">
-        <form class="commit-form" method="" action="" onsubmit="return false">
-            <div class="commit-form">
-                <label for="player">player:</label>
-                <input type="number" name="player" id="player" required>
-            </div>
-            <div class="commit-form">
-                <label for="piece-id">piece-id:</label>
-                <input type="number" name="piece-id" id="piece-id" required>
-            </div>
-            <div class="commit-form">
-                <label for="fliprot-id">fliprot-id:</label>
-                <input type="number" name="fliprot-id" id="fliprot-id" required>
-            </div>
-            <div class="x">
-                <label for="x">x:</label>
-                <input type="number" name="x" id="x" required>
-            </div>
-            <div class="y">
-                <label for="y">y:</label>
-                <input type="number" name="y" id="y" required>
-            </div>
-            <input type="submit" value="送信">
-        </form>
-    </div>
-    <div class="fliprot">
-{% for i in range(8) %}
-    <div class="f{{ i }}">
-    <canvas width="100" height="100" style="background-color:#ccc;" id="{{ i }}_fliprot">
-    </canvas>
-    </div>
-{% endfor %}
-    </div>
-    <div class="pieces">
-{% for i in range(21) %}
-    <div class="p{{ i }}">
-    <canvas width="100" height="100" style="background-color:#ccc;" id="{{ i }}_base">
-    </canvas>
-    </div>
-{% endfor %}
-    </div>
+        <div class="field">
+            <canvas width="450" height="430" id="a_canvas">
+            </canvas>
+        </div>
+        <div class="commit">
+            <form class="commit-form" method="" action="" onsubmit="return false">
+                <div class="commit-form">
+                    <label for="player">player:</label>
+                    <input type="number" name="player" id="player" required>
+                </div>
+                <div class="commit-form">
+                    <label for="piece-id">piece-id:</label>
+                    <input type="number" name="piece-id" id="piece-id" required>
+                </div>
+                <div class="commit-form">
+                    <label for="fliprot-id">fliprot-id:</label>
+                    <input type="number" name="fliprot-id" id="fliprot-id" required>
+                </div>
+                <div class="x">
+                    <label for="x">x:</label>
+                    <input type="number" name="x" id="x" required>
+                </div>
+                <div class="y">
+                    <label for="y">y:</label>
+                    <input type="number" name="y" id="y" required>
+                </div>
+                <input type="submit" value="送信">
+            </form>
+        </div>
     </div>
     <script>
-    function b_func() {
-        function onClick(e) {
-            let button = e.target.getBoundingClientRect();
-	        let mouseX = e.clientX - button.left;
-    		let mouseY = e.clientY - button.top;
-            let x = Math.floor(mouseX/20) - 1
-            let y = Math.floor(mouseY/20) - 1
-            inputXy(x, y);
+        function clickFieldToAppendXy() {
+            function onClick(e) {
+                let button = e.target.getBoundingClientRect();
+                let mouseX = e.clientX - button.left;
+                let mouseY = e.clientY - button.top;
+                let x = Math.floor(mouseX/20) - 1
+                let y = Math.floor(mouseY/20) - 1
+                inputXy(x, y);
+            }
+            function inputXy(s1, s2) {
+                document.querySelector("#x").value = s1;
+                document.querySelector("#y").value = s2;
+            }
+            a_canvas.addEventListener('click', onClick);
         }
-        function inputXy(s1, s2) {
-            document.querySelector("#x").value = s1;
-            document.querySelector("#y").value = s2;
-        }
-        a_canvas.addEventListener('click', onClick);
-    }
-    b_func();
+        clickFieldToAppendXy();
     </script>
     <script>
         const btn = document.querySelector("body > div > div.commit > form > input[type=submit]");
