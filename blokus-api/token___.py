@@ -26,11 +26,11 @@ def verify_token(token: str, credentials_exception, db: Session):
             SECRET_KEY,
             algorithms=[ALGORITHM]
         )
-        email: str = payload.get("sub")
+        user_name: str = payload.get("sub")
         id: int = payload.get("id")
-        if email is None:
+        if user_name is None:
             raise credentials_exception
-        token_data = TokenData(email=email)
+        token_data = TokenData(email=user_name)
     except JWTError:
         raise credentials_exception
     player = show(id, db)
