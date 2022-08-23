@@ -15,19 +15,19 @@ def login(
     request: OAuth2PasswordRequestForm=Depends(),
     db: Session=Depends(get_db)
 ):
-    player = db.query(models.Player).filter(models.Player.name==request.username).first()
-    if not player:
+    user = db.query(models.User).filter(models.User.name==request.username).first()
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f'Invalid Credentials'
         )
     # if not Hash.verify(request.password, user.password):
-    if not request.password == player.raw_pwd:
+    if not request.password == user.raw_pwd:
         raise HTTPException(
             status_code = status.HTTP_404_NOT_FOUND,
             detail=f'Incorrect Password'
         )
     access_token = token___.create_access_token(
-        data={"sub": player.name, "id": player.id}
+        data={"sub": user.name, "id": user.id}
     )
     return {"access_token": access_token, "token_type": "bearer"}

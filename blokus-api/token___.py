@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from schemas import TokenData
 from sqlalchemy.orm import Session
-from functions.player import show
+from functions.user import show
 
 SECRET_KEY = "xxxxxxxxx"
 ALGORITHM = "HS256"

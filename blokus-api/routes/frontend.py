@@ -13,5 +13,6 @@ router = APIRouter(
 )
 
 @router.get("/")
-def get_rendered_field(current_player: models.Player=Depends(oauth2.get_current_user)):
-    return frontend.get(current_player)
+# def get_rendered_field(current_user: models.User=Depends(oauth2.get_current_user)):
+def get_rendered_field():
+    return frontend.get()
