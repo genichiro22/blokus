@@ -4,15 +4,14 @@ from sqlalchemy.orm import Session
 # from fastapi import status
 from functions import validation
 
-def read(db:Session):
-    field = db.query(models.Field).all()
-    # print(field)
+def read(game_id:int, db:Session):
+    field = db.query(models.GameField).filter(models.GameField.game_id==game_id).all()
     return field
 
-def create(db:Session):
+def create(game_id:int, db:Session):
     for x in range(20):
         for y in range(20):
-            plot = models.Field(x=x, y=y)
+            plot = models.GameField(game_id=game_id, x=x, y=y)
             db.add(plot)
     db.commit()
     db.refresh(plot)
@@ -21,7 +20,7 @@ def create(db:Session):
 def update(field_update:FieldPost, db:Session):
     player = field_update.player
     for c in field_update.coordinates:
-        current_field = db.query(models.Field).filter(models.Field.x == c.x, models.Field.y == c.y)
+        current_field = db.query(models.GameField).filter(models.GameField.x == c.x, models.GameField.y == c.y)
         field = {
             "x": c.x,
             "y": c.y,

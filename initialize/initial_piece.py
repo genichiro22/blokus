@@ -19,7 +19,7 @@ for key in d.keys():
     r_post = requests.post(url+"pieces/", json=body)
 
 requests.post(url+"pieces/all/")
-
+"""
 requests.post(url+"field/")
 
 i = 0
@@ -61,3 +61,4 @@ body["coordinate"]["y"]=1
 requests.put(url+"field/piece/", json=body)
 body["piece_id"]=2
 requests.put(url+"field/piece/", json=body)
+"""
