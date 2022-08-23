@@ -41,6 +41,10 @@ class NewUser(BaseModel):
     class Config:
         orm_mode=True
 
+class UserToPlayer(BaseModel):
+    player: int
+    user_id: int
+
 class Login(BaseModel):
     user_name: str
     password: str

@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, status
 from database import get_db
 from sqlalchemy.orm import Session
 from functions import game
+from schemas import UserToPlayer
 
 router = APIRouter(
     prefix = "/game",
@@ -15,3 +16,7 @@ def read_game(id:int, db:Session=Depends(get_db)):
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def create_game(db:Session=Depends(get_db)):
     return game.create(db)
+
+@router.post("/{id}/", status_code=status.HTTP_201_CREATED)
+def assign_user(id:int, user_to_player:UserToPlayer, db:Session=Depends(get_db)):
+    return game.add_player(id, user_to_player, db)
