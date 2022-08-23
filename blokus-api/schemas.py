@@ -35,6 +35,12 @@ class PlayerPost(BaseModel):
     class Config:
         orm_mode=True
 
+class NewUser(BaseModel):
+    name: str
+    pwd: str
+    class Config:
+        orm_mode=True
+
 class Login(BaseModel):
     user_name: str
     password: str

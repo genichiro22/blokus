@@ -16,26 +16,37 @@ class PieceFR(Base):
     fliprot_id = Column(Integer)
     x = Column(Integer)
     y = Column(Integer)
-
     base = relationship('PieceBase', back_populates="piece_fr")
 
-class Field(Base):
-    __tablename__ = "field"
-    id = Column(Integer, primary_key=True, index=True)
-    x = Column(Integer)
-    y = Column(Integer)
-    value = Column(Integer, default=0)
-
-class Player(Base):
-    __tablename__ = "player"
+class User(Base):
+    __tablename__ = "user"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     raw_pwd = Column(String)
-    turn = Column(Integer, default=0)
-    is_current_player = Column(Boolean, default=False)
+
+class Game(Base):
+    __tablename__ = "game"
+    id = Column(Integer, primary_key=True, index=True)
+    current_player = Column(Integer)
+
+class GameField(Base):
+    __tablename__ = "game_field"
+    id = Column(Integer, primary_key=True)
+    game_id = Column(Integer, ForeignKey('game.id'))
+    x = Column(Integer)
+    y = Column(Integer)
+    player = Column(Integer, default=0)
+
+class GamePlayer(Base):
+    __tablename__ = "game_player"
+    id = Column(Integer, primary_key=True)
+    game_id = Column(Integer, ForeignKey('game.id'))
+    player = Column(Integer)
+    user_id = Column(Integer, ForeignKey('user.id'))
 
 class PlayerPieces(Base):
     __tablename__ = "player_pieces"
     id = Column(Integer, primary_key=True, index=True)
-    player_id = Column(Integer, ForeignKey('player.id'))
+    game_id = Column(Integer, ForeignKey('game.id'))
+    player = Column(Integer, ForeignKey('game_player.player'))
     piecebase_id = Column(Integer, ForeignKey('piece_base.id'))
