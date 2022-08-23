@@ -27,7 +27,7 @@ class User(Base):
 class Game(Base):
     __tablename__ = "game"
     id = Column(Integer, primary_key=True, index=True)
-    current_player = Column(Integer)
+    current_player = Column(Integer, default=1)
 
 class GameField(Base):
     __tablename__ = "game_field"

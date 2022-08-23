@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from database import engine, Base
 # from routes import piece, field, player, frontend, auth
-from routes import user
+from routes import user, game
 
 app = FastAPI()
 Base.metadata.create_all(engine)
 app.include_router(user.router)
+app.include_router(game.router)
 
 """
 app.include_router(piece.router)

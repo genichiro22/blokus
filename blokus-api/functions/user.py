@@ -10,6 +10,7 @@ def create(new_user:NewUser, db:Session):
     )
     db.add(user)
     db.commit()
+    return user
 
 def show(id:int, db:Session):
     user = db.query(models.User).filter(models.User.id==id).first()
