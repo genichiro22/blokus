@@ -1,4 +1,3 @@
-from schemas import PutPiece, FieldPost
 from fastapi import APIRouter, Depends, status
 from database import get_db
 from sqlalchemy.orm import Session

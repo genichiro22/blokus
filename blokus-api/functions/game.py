@@ -1,8 +1,5 @@
 import models
-from schemas import PutPiece, FieldPost
 from sqlalchemy.orm import Session
-# from fastapi import status
-from functions import validation
 
 def read(id:int, db:Session):
     game = db.query(models.Game).filter(models.Game.id==id).first()
