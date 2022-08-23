@@ -17,7 +17,7 @@ for key in d.keys():
         "base_shape": base_shape
     }
     r_post = requests.post(url+"pieces/", json=body)
-    
+
 requests.post(url+"pieces/all/")
 
 requests.post(url+"field/")
