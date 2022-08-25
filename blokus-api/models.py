@@ -27,9 +27,10 @@ class User(Base):
 class Game(Base):
     __tablename__ = "game"
     id = Column(Integer, primary_key=True, index=True)
-    current_player = Column(Integer, default=1)
+    turn = Column(Integer, default=1)
 
     field = relationship("GameField", back_populates="game")
+    pieces = relationship("PlayerPieces", back_populates="game")
 
 class GameField(Base):
     __tablename__ = "game_field"
@@ -48,9 +49,12 @@ class GamePlayer(Base):
     player = Column(Integer)
     user_id = Column(Integer, ForeignKey('user.id'))
 
+
 class PlayerPieces(Base):
     __tablename__ = "player_pieces"
     id = Column(Integer, primary_key=True, index=True)
     game_id = Column(Integer, ForeignKey('game.id'))
     player = Column(Integer, ForeignKey('game_player.player'))
     piecebase_id = Column(Integer, ForeignKey('piece_base.id'))
+    
+    game = relationship("Game", back_populates="pieces")

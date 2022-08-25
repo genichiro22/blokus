@@ -20,7 +20,7 @@ class FieldPost(BaseModel):
         orm_mode=True
 
 class PutPiece(BaseModel):
-    player: int
+    user_id: int
     # turn: int
     piece_id: int
     fr_id: int
