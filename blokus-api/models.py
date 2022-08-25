@@ -29,6 +29,8 @@ class Game(Base):
     id = Column(Integer, primary_key=True, index=True)
     current_player = Column(Integer, default=1)
 
+    field = relationship("GameField", back_populates="game")
+
 class GameField(Base):
     __tablename__ = "game_field"
     id = Column(Integer, primary_key=True)
@@ -36,6 +38,8 @@ class GameField(Base):
     x = Column(Integer)
     y = Column(Integer)
     player = Column(Integer, default=0)
+
+    game = relationship("Game", back_populates="field")
 
 class GamePlayer(Base):
     __tablename__ = "game_player"

@@ -19,20 +19,17 @@ for key in d.keys():
     r_post = requests.post(url+"pieces/", json=body)
 
 requests.post(url+"pieces/all/")
-"""
-requests.post(url+"field/")
 
-i = 0
 for name in ["isshin", "genichiro", "sekiro", "fukuro"]:
     body = {
         "name": name,
         "pwd": name + "1234",
-        "turn": 0,
-        "is_first": (i==0)
     }
-    requests.post(url+"player/", json=body)
-    i=1
+    requests.post(url+"user/", json=body)
 
+requests.post(url+"game/")
+
+"""
 requests.post(url+"player/pieces/")
 
 body = {

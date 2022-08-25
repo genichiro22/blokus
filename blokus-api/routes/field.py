@@ -3,6 +3,8 @@ from fastapi import APIRouter, Depends, status, Path
 from database import get_db
 from sqlalchemy.orm import Session
 from functions import field
+import models
+import oauth2
 
 router = APIRouter(
     prefix = "/{game_id}/field",
@@ -10,8 +12,8 @@ router = APIRouter(
 )
 
 @router.get("/", status_code=status.HTTP_200_OK)
-def get_field(game_id:int, db:Session=Depends(get_db)):
-    return field.read(game_id, db)
+def get_field(game:models.Game=Depends(oauth2.get_current_game), db:Session=Depends(get_db)):
+    return field.read(game, db)
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def post_field(game_id:int, db:Session=Depends(get_db)):
