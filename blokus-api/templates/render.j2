@@ -72,8 +72,8 @@
         <div class="commit">
             <form class="commit-form" method="" action="" onsubmit="return false">
                 <div class="commit-form">
-                    <label for="player">player:</label>
-                    <input type="number" name="player" id="player" required>
+                    <label for="user_id">user_id:</label>
+                    <input type="number" name="user_id" id="user_id" required>
                 </div>
                 <div class="commit-form">
                     <label for="piece-id">piece-id:</label>
@@ -115,14 +115,14 @@
     </script>
     <script>
         const btn = document.querySelector("body > div > div.commit > form > input[type=submit]");
-        const player = document.querySelector("#player");
+        const user_id = document.querySelector("#user_id");
         const pieceId = document.querySelector("#piece-id");
         const flipRotId = document.querySelector("#fliprot-id");
         let x = document.querySelector("#x");
         let y = document.querySelector("#y");
         function sendData( data ) {
             let body = {
-                "player": Number(player.value),
+                "user_id": Number(user_id.value),
                 "piece_id": Number(pieceId.value),
                 "fr_id": Number(flipRotId.value),
                 "coordinate": {
@@ -132,7 +132,7 @@
             }
             let body_s = JSON.stringify(body)
             let XHR = new XMLHttpRequest();
-            XHR.open("PUT", "/field/piece/");
+            XHR.open("PUT", "/game/1/field/piece/");
             XHR.setRequestHeader("Content-Type", "application/json");
             XHR.onload = function () {
                 if (XHR.status===200) {

@@ -9,7 +9,7 @@ class validation:
         self.game = game
         self.put_piece = put_piece
         self.db = db
-        self.query = db.query(models.GamePlayer).filter(
+        self.query = db.query(models.GamePlayer).join(models.Game).filter(
             models.GamePlayer.user_id == put_piece.user_id,
             models.Game.id == game.id
         )
@@ -32,7 +32,7 @@ class validation:
             self.vertex_condition()
 
     def turn(self):
-        print("turn")
+        # print("turn")
         if self.game.turn%4 != self.player%4:
             raise HTTPException(
                 status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -41,7 +41,7 @@ class validation:
     
     def posession(self):
         piece_id = self.put_piece.piece_id
-        query = self.db.query(models.PlayerPieces).filter(
+        query = self.db.query(models.PlayerPieces).join(models.Game).filter(
             models.Game.id == self.game.id,
             models.PlayerPieces.player == self.player,
             models.PlayerPieces.piecebase_id == piece_id
@@ -69,7 +69,7 @@ class validation:
     def existence(self):
         check = [
             {
-                (c["x"], c["y"]): self.db.query(models.GameField).filter(
+                (c["x"], c["y"]): self.db.query(models.GameField).join(models.Game).filter(
                     models.GameField.x == c["x"],
                     models.GameField.y == c["y"],
                     models.Game.id == self.game.id
@@ -101,7 +101,7 @@ class validation:
         for c_dic, dx, dy in itertools.product(self.coordinates,(-1,1),(-1,1)):
             x = c_dic["x"]+dx
             y = c_dic["y"]+dy
-            c = self.db.query(models.GameField).filter(
+            c = self.db.query(models.GameField).join(models.Game).filter(
                 models.GameField.x==x,
                 models.GameField.y==y,
                 models.GameField.player == self.player,
@@ -122,7 +122,7 @@ class validation:
             for dx, dy in [(1,0), (-1,0), (0,1), (0,-1)]:
                 x = c_dic["x"]+dx
                 y = c_dic["y"]+dy
-                query = self.db.query(models.GameField).filter(
+                query = self.db.query(models.GameField).join(models.Game).filter(
                     models.GameField.x==x,
                     models.GameField.y==y,
                     models.Game.id == self.game.id,

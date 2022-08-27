@@ -27,13 +27,18 @@ for name in ["isshin", "genichiro", "sekiro", "fukuro"]:
     }
     requests.post(url+"user/", json=body)
 
-requests.post(url+"game/")
+r = requests.post(url+"game/")
+game_id = r.json()
+print(game_id)
+game_id = r.json()["id"]
+print(game_id)
 
-"""
-requests.post(url+"player/pieces/")
+for p, u in [(1,1), (3,3), (2,4), (4,2)]:
+    body = {"player": p, "user_id": u}
+    requests.post(url+f"game/{game_id}/", json=body)
 
 body = {
-    "player": 1,
+    "user_id": 1,
     "piece_id": 1,
     "fr_id": 0,
     "coordinate": {
@@ -42,20 +47,21 @@ body = {
     }
 }
 
-requests.put(url+"field/piece/", json=body)
-body["player"]+=1
+put_piece_url = url + f"game/{game_id}/field/piece/"
+
+requests.put(put_piece_url, json=body)
+body["user_id"]=4
 body["coordinate"]["x"]=19
-requests.put(url+"field/piece/", json=body)
-body["player"]+=1
+requests.put(put_piece_url, json=body)
+body["user_id"]=3
 body["coordinate"]["y"]=19
-requests.put(url+"field/piece/", json=body)
-body["player"]+=1
+requests.put(put_piece_url, json=body)
+body["user_id"]=2
 body["coordinate"]["x"]=0
-requests.put(url+"field/piece/", json=body)
-body["player"]=1
+requests.put(put_piece_url, json=body)
+body["user_id"]=1
 body["coordinate"]["x"]=1
 body["coordinate"]["y"]=1
-requests.put(url+"field/piece/", json=body)
+requests.put(put_piece_url, json=body)
 body["piece_id"]=2
-requests.put(url+"field/piece/", json=body)
-"""
+requests.put(put_piece_url, json=body)

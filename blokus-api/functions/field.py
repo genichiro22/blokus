@@ -1,7 +1,7 @@
 import models
 from schemas import PutPiece, FieldPost
 from sqlalchemy.orm import Session
-# from fastapi import status
+from fastapi import status, HTTPException
 from functions import validation
 
 # def read(game:models.Game, db:Session):
@@ -24,12 +24,12 @@ def update(game:models.Game, field_update:FieldPost, db:Session):
         current_field = db.query(models.GameField).filter(
             models.GameField.x == c.x,
             models.GameField.y == c.y,
-            models.Game.id==game.id
+            models.GameField.game_id==game.id
         )
         field = {
             "x": c.x,
             "y": c.y,
-            "value": player
+            "player": player
         }
         current_field.update(field)
     db.commit()
@@ -45,12 +45,18 @@ def put_piece(game:models.Game, put_piece:PutPiece, db:Session):
         for e in piece
     ]
     # print(coordinates)
-    v = validation.validation(game, put_piece, db)
-    v.whole()
-    player = db.query(models.GamePlayer).join(models.Game).filter(
+    p = db.query(models.GamePlayer).join(models.Game).filter(
         models.Game.id == game.id,
         models.GamePlayer.user_id == put_piece.user_id,
-    ).first().player
+    ).first()
+    if not p:
+        raise HTTPException(
+            status_code = status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail = "You are not assigned to this game"
+        )
+    player = p.player
+    v = validation.validation(game, put_piece, db)
+    v.whole()
     for c in coordinates:
         # print("11111111")
         current_field = db.query(models.GameField).filter(

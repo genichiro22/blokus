@@ -19,7 +19,7 @@ def query_game_by_id(game_id:int, db:Session=Depends(get_db)):
 # def get_field(game:models.Game=Depends(oauth2.get_current_game), db:Session=Depends(get_db)):
 def get_field(game_id:int, db:Session=Depends(get_db)):
     game = query_game_by_id(game_id, db)
-    return field.read(game, db)
+    return field.read(game)
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def post_empty_field(game_id:int, db:Session=Depends(get_db)):
