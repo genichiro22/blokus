@@ -4,12 +4,19 @@ from sqlalchemy.orm import Session
 from fastapi import status, HTTPException
 
 def create(new_user:NewUser, db:Session):
+    u = db.query(models.User).filter(models.User.name==new_user.name).all()
+    if u:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"User name {new_user.name} already exists"
+        )
     user = models.User(
         name = new_user.name,
         raw_pwd = new_user.pwd,
     )
     db.add(user)
     db.commit()
+    user.id
     return user
 
 def show(id:int, db:Session):
@@ -20,17 +27,3 @@ def show(id:int, db:Session):
             detail=f'User with the id {id} is not available'
         )
     return user
-"""
-def give_all_pieces(db:Session):
-    players = db.query(models.Player).all()
-    pieces = db.query(models.PieceBase).all()
-    for player, piece in itertools.product(players, pieces):
-        e = models.PlayerPieces(
-            player_id = player.id,
-            piecebase_id = piece.id
-        )
-        db.add(e)
-    db.commit()
-    db.refresh(e)
-    return "done"
-"""

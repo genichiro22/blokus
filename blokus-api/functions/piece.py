@@ -6,12 +6,7 @@ import numpy as np
 import json
 
 def create_piece(piece:PiecePost, db:Session):
-    # print(base_shape)
-    # print(piece.base_shape)
     coordinates = [{"x":c.x, "y":c.y} for c in piece.base_shape]
-    # print(coordinates)
-    # print(json.dumps(coordinates))
-    # base_shape = piece.base_shape
     new_piece = models.PieceBase(
         name = piece.name,
         base_shape = json.dumps(coordinates)

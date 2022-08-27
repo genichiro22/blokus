@@ -36,15 +36,11 @@ def update(game:models.Game, field_update:FieldPost, db:Session):
     return "updated"
 
 def put_piece(game:models.Game, put_piece:PutPiece, db:Session):
-    # print(put_piece)
-    # print(1)
     piece = db.query(models.PieceFR).filter(models.PieceFR.piecebase_id==put_piece.piece_id, models.PieceFR.fliprot_id==put_piece.fr_id).all()
-    # print(piece)
     coordinates = [
         {"x":put_piece.coordinate.x + e.x, "y":put_piece.coordinate.y + e.y}
         for e in piece
     ]
-    # print(coordinates)
     p = db.query(models.GamePlayer).join(models.Game).filter(
         models.Game.id == game.id,
         models.GamePlayer.user_id == put_piece.user_id,
@@ -58,26 +54,14 @@ def put_piece(game:models.Game, put_piece:PutPiece, db:Session):
     v = validation.validation(game, put_piece, db)
     v.whole()
     for c in coordinates:
-        # print("11111111")
         current_field = db.query(models.GameField).filter(
             models.GameField.x == c["x"],
             models.GameField.y == c["y"],
             models.GameField.game_id==game.id
         )
-        # field = {
-        #     "x": c.x,
-        #     "y": c.y,
-        #     "player": player
-        # }
         current_field.update(
             {"player": player}
         )
-    # update(game, field_post, db)
-    # query = db.query(models.Game).filter(models.Game.turn%4 == put_piece.player%4)
-    # player = query.first()
-    # update_player = {"turn": player.turn+1, "is_current_player": False}
-    # query.update(update_player)
-    # db.query(models.User).filter(models.User.id == put_piece.player%4+1).update({"is_current_player": True})
     q = db.query(models.Game).filter(models.Game.id==game.id)
     turn = q.first().turn
     q.update({"turn": turn+1})
@@ -85,6 +69,4 @@ def put_piece(game:models.Game, put_piece:PutPiece, db:Session):
         models.PlayerPieces.player==player,
         models.PlayerPieces.piecebase_id==put_piece.piece_id
     ).delete()
-    # new_turn = {"current_player_id": put_piece.player%4+1}
-    # db.query(TurnControl).update(new_turn)
     db.commit()

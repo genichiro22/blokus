@@ -10,8 +10,3 @@ app.include_router(game.router)
 app.include_router(piece.router)
 app.include_router(auth.router)
 app.include_router(frontend.router)
-
-"""
-app.include_router(field.router)
-app.include_router(player.router)
-"""
