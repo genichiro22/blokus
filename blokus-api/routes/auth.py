@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from os import access
+from fastapi import APIRouter, Depends, status, HTTPException, Response
 from fastapi.security import OAuth2PasswordRequestForm
 import models
 import token___
@@ -12,6 +13,7 @@ router = APIRouter(
 
 @router.post('/login')
 def login(
+    response: Response,
     request: OAuth2PasswordRequestForm=Depends(),
     db: Session=Depends(get_db)
 ):
@@ -29,5 +31,8 @@ def login(
         )
     access_token = token___.create_access_token(
         data={"sub": user.name, "id": user.id}
+    )
+    response.set_cookie(
+        key="access_token", value = f"Bearer {access_token}", httponly=True
     )
     return {"access_token": access_token, "token_type": "bearer"}
