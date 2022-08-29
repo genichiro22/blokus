@@ -36,3 +36,4 @@ def login(
         key="access_token", value = f"Bearer {access_token}", httponly=True
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
