@@ -1,4 +1,3 @@
-from jinja2 import Environment, FileSystemLoader
 from fastapi.responses import HTMLResponse
 from fastapi import Request, HTTPException, status
 from sqlalchemy.orm import Session
