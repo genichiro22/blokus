@@ -20,7 +20,7 @@ def create_access_token(data: dict, expires_delta:Optional[timedelta]=None):
     return encoded_jwt
 
 def verify_token(token: str, credentials_exception, db: Session):
-    print(token)
+    # print(token)
     try:
         payload = jwt.decode(
             token,
