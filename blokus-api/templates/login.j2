@@ -3,5 +3,40 @@
 </head>
 <body>
     <p>Enter your ID and PWD</p>
+    <div class="commit">
+        <form class="commit-form" method="" action="" onsubmit="return false">
+            <div class="commit-form">
+                <label for="user_name">user name:</label>
+                <input type="string" name="user_name" id="user_name" required>
+            </div>
+            <div class="commit-form">
+                <label for="password">password:</label>
+                <input type="string" name="password" id="password" required>
+            </div>
+            <input type="submit" value="ログイン">
+        </form>
+    </div>
+    <script>
+        const btn = document.querySelector("body > div > form > input[type=submit]");
+        function login( data ) {
+            let body = {
+                "username": user_name.value,
+                "password": password.value
+            }
+            let body_s = new URLSearchParams(body);
+            let XHR = new XMLHttpRequest();
+            XHR.open("POST", "/login/");
+            XHR.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            XHR.onload = function () {
+                if (XHR.status===200) {
+                    window.location.href = "http://localhost:8000/";
+                } else {
+                    window.alert(XHR.response);
+                }
+            };
+            XHR.send(body_s);
+        }
+        btn.addEventListener('click', login);
+    </script>
 </body>
 </html>
