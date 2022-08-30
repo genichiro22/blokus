@@ -1,5 +1,4 @@
-from os import access
-from urllib.request import Request
+from fastapi.responses import HTMLResponse
 from fastapi import APIRouter, Depends, status, HTTPException, Response
 from fastapi.security import OAuth2PasswordRequestForm
 import models
@@ -7,6 +6,7 @@ import token___
 from schemas import Login
 from database import get_db
 from sqlalchemy.orm import Session
+from env.settings import TEMPLATE_ENV
 
 router = APIRouter(
     tags=['Auth']
@@ -37,6 +37,12 @@ def login(
         key="access_token", value = f"Bearer {access_token}", httponly=True
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.get("/login")
+def login_front():
+    tmpl = TEMPLATE_ENV.get_template('login.j2')
+    c = tmpl.render()
+    return HTMLResponse(content=c)
 
 @router.get("/logout")
 def logout(response:Response):
