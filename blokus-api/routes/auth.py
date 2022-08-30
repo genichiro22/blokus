@@ -1,4 +1,5 @@
 from os import access
+from urllib.request import Request
 from fastapi import APIRouter, Depends, status, HTTPException, Response
 from fastapi.security import OAuth2PasswordRequestForm
 import models
@@ -37,3 +38,9 @@ def login(
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
+@router.get("/logout")
+def logout(response:Response):
+    response.delete_cookie(
+        key="access_token"
+    )
+    return True
