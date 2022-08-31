@@ -16,8 +16,9 @@ router = APIRouter(
 
 @router.get("/game/")
 def get_games(db:Session=Depends(get_db)):
+    games = db.query(models.Game).all()
     tmpl = TEMPLATE_ENV.get_template("games.j2")
-    c = tmpl.render()
+    c = tmpl.render(games=games)
     return HTMLResponse(content=c)
 
 @router.get("/game/{id}/")

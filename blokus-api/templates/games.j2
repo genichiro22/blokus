@@ -3,5 +3,8 @@
 </head>
 <body>
     <p>Current games</p>
+    {% for game in games %}
+    <div> {{ game.id }} </div>
+    {% endfor %}
 </body>
 </html>
