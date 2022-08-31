@@ -5,15 +5,16 @@ from fastapi import status, HTTPException
 import itertools
 
 class validation:
-    def __init__(self, game:models.Game, put_piece:PutPiece, db:Session):
+    def __init__(self, game:models.Game, put_piece:PutPiece, player:int, db:Session):
         self.game = game
         self.put_piece = put_piece
         self.db = db
-        self.query = db.query(models.GamePlayer).join(models.Game).filter(
-            models.GamePlayer.user_id == put_piece.user_id,
-            models.Game.id == game.id
-        )
-        self.player = self.query.first().player
+        # self.query = db.query(models.GamePlayer).join(models.Game).filter(
+        #     models.GamePlayer.user_id == put_piece.user_id,
+        #     models.Game.id == game.id
+        # )
+        # self.player = self.query.first().player
+        self.player = player
         self.field = self.game.field
         self.piece = db.query(models.PieceFR).filter(
             models.PieceFR.piecebase_id==self.put_piece.piece_id,

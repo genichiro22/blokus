@@ -1,5 +1,5 @@
 from schemas import PutPiece, FieldPost
-from fastapi import APIRouter, Depends, status, Path
+from fastapi import APIRouter, Depends, status, Path, Request
 from database import get_db
 from sqlalchemy.orm import Session
 from functions import field
@@ -32,6 +32,6 @@ def update_field(game_id:int, field_update:FieldPost, db:Session=Depends(get_db)
     return field.update(game, field_update, db)
 
 @router.put("/piece/")
-def put_piece_to_field(game_id:int, put_piece:PutPiece, db:Session=Depends(get_db)):
+def put_piece_to_field(game_id:int, put_piece:PutPiece, request:Request, db:Session=Depends(get_db)):
     game = query_game_by_id(game_id, db)
-    return field.put_piece(game, put_piece, db)
+    return field.put_piece(game, put_piece, request, db)

@@ -71,10 +71,10 @@
         </div>
         <div class="commit">
             <form class="commit-form" method="" action="" onsubmit="return false">
-                <div class="commit-form">
+                {# <div class="commit-form">
                     <label for="user_id">user_id:</label>
                     <input type="number" name="user_id" id="user_id" required>
-                </div>
+                </div> #}
                 <div class="commit-form">
                     <label for="piece-id">piece-id:</label>
                     <input type="number" name="piece-id" id="piece-id" required>
@@ -122,7 +122,7 @@
         let y = document.querySelector("#y");
         function sendData( data ) {
             let body = {
-                "user_id": Number(user_id.value),
+                {# "user_id": Number(user_id.value), #}
                 "piece_id": Number(pieceId.value),
                 "fr_id": Number(flipRotId.value),
                 "coordinate": {
