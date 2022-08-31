@@ -18,8 +18,8 @@ def get_current_user(token: str=Depends(oauth2_scheme), db: Session = Depends(ge
 
 def get_current_user_from_cookie(token:str, db:Session=Depends(get_db)):
     if not token:
-        name = "Guest"
-        return None
+        # name = "Guest"
+        return models.User(id=-1, name="Guest")
     else:
         if token[0:7] == "Bearer ":
         # print(token[0:7])

@@ -32,7 +32,7 @@
         }
         function fillAllRect() {
             let XHR = new XMLHttpRequest();
-            XHR.open("GET", "/game/1/field/");
+            XHR.open("GET", "/game/{{ game_id }}/field/");
             XHR.setRequestHeader("Content-Type", "application/json");
             XHR.onload = function () {
                 res = XHR.response;
@@ -63,7 +63,14 @@
 <body>
     <div class="container">
         <div class="hello">
-            <p> Hello, {{ player_name }}!</p>
+            <p>
+                Hello, {{ player_name }}! 
+                {% if player_turn==None %}
+                You are not assigned to this game.
+                {% else %}
+                You are player {{ player_turn }}.
+                {% endif %}
+            </p>
         </div>
         <div class="field">
             <canvas width="450" height="430" id="a_canvas">
@@ -132,7 +139,7 @@
             }
             let body_s = JSON.stringify(body)
             let XHR = new XMLHttpRequest();
-            XHR.open("PUT", "/game/1/field/piece/");
+            XHR.open("PUT", "/game/{{ game_id }}/field/piece/");
             XHR.setRequestHeader("Content-Type", "application/json");
             XHR.onload = function () {
                 if (XHR.status===200) {

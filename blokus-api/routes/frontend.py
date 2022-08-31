@@ -1,18 +1,38 @@
 from schemas import PutPiece, FieldPost
-from fastapi import APIRouter, Depends, status, Request, HTTPException
+from fastapi import APIRouter, Depends, status, Request, HTTPException, Response
 from database import get_db
 from sqlalchemy.orm import Session
 from jinja2 import Template, Environment, FileSystemLoader
 from fastapi.responses import HTMLResponse
-from functions import frontend
+from functions import frontend, game
 import oauth2
 import models
+from env.settings import TEMPLATE_ENV
 
 router = APIRouter(
-    tags = ["frontend"]
+    tags = ["frontend"],
+    prefix= "/frontend"
 )
 
-@router.get("/")
-# def get_rendered_field(current_user: models.User=Depends(oauth2.get_current_user)):
-def get_rendered_field(request:Request, db:Session=Depends(get_db)):
-    return frontend.get(request, db)
+@router.get("/game/")
+def get_games(db:Session=Depends(get_db)):
+    tmpl = TEMPLATE_ENV.get_template("games.j2")
+    c = tmpl.render()
+    return HTMLResponse(content=c)
+
+@router.get("/game/{id}/")
+def get_rendered_field(id:int, request:Request, db:Session=Depends(get_db)):
+    return frontend.get(id, request, db)
+
+@router.get("/login/")
+def login_front():
+    tmpl = TEMPLATE_ENV.get_template('login.j2')
+    c = tmpl.render()
+    return HTMLResponse(content=c)
+
+@router.get("/logout/")
+def logout(response:Response):
+    response.delete_cookie(
+        key="access_token"
+    )
+    return True
