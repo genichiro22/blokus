@@ -76,6 +76,7 @@
             <canvas width="450" height="430" id="a_canvas">
             </canvas>
         </div>
+        {% if player_turn!=None %}
         <div class="commit">
             <form class="commit-form" method="" action="" onsubmit="return false">
                 {# <div class="commit-form">
@@ -101,7 +102,9 @@
                 <input type="submit" value="送信">
             </form>
         </div>
+        {% endif %}
     </div>
+    {% if player_turn!=None %}
     <script>
         function clickFieldToAppendXy() {
             function onClick(e) {
@@ -152,5 +155,6 @@
         }
         btn.addEventListener('click', sendData);
     </script>
+    {% endif %}
 </body>
 </html>

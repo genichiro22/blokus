@@ -4,7 +4,11 @@
 <body>
     <p>Current games</p>
     {% for game in games %}
-    <div> {{ game.id }} </div>
+    <div>
+        <a href="./{{ game.id }}">
+            {{ game.id }}
+        </a>
+    </div>
     {% endfor %}
 </body>
 </html>

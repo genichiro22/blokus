@@ -18,6 +18,7 @@ def get(id:int, request:Request, db:Session):
     token = request.cookies.get("access_token")
     if not token:
         name = "Guest"
+        turn = None
     else:
         if token[0:7] == "Bearer ":
         # print(token[0:7])
