@@ -7,8 +7,7 @@ import models
 import oauth2
 
 router = APIRouter(
-    prefix = "/{game_id}/field",
-    tags = ["gamefield"]
+    prefix = "/{game_id}/field"
 )
 
 def query_game_by_id(game_id:int, db:Session=Depends(get_db)):
@@ -20,7 +19,7 @@ def query_game_by_id(game_id:int, db:Session=Depends(get_db)):
 def get_field(game_id:int, db:Session=Depends(get_db)):
     game = query_game_by_id(game_id, db)
     return field.read(game)
-
+'''
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def post_empty_field(game_id:int, db:Session=Depends(get_db)):
     game = query_game_by_id(game_id, db)
@@ -30,7 +29,7 @@ def post_empty_field(game_id:int, db:Session=Depends(get_db)):
 def update_field(game_id:int, field_update:FieldPost, db:Session=Depends(get_db)):
     game = query_game_by_id(game_id, db)
     return field.update(game, field_update, db)
-
+'''
 @router.put("/piece/")
 def put_piece_to_field(game_id:int, put_piece:PutPiece, request:Request, db:Session=Depends(get_db)):
     game = query_game_by_id(game_id, db)

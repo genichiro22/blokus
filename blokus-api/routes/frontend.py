@@ -15,10 +15,12 @@ router = APIRouter(
 )
 
 @router.get("/game/")
-def get_games(db:Session=Depends(get_db)):
+def get_games(request:Request, db:Session=Depends(get_db)):
     games = db.query(models.Game).all()
     tmpl = TEMPLATE_ENV.get_template("games.j2")
-    c = tmpl.render(games=games)
+    token = request.cookies.get("access_token")
+    user = oauth2.get_current_user_from_cookie(token)
+    c = tmpl.render(games=games, user=user)
     return HTMLResponse(content=c)
 
 @router.get("/game/{id}/")

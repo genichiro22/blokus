@@ -12,11 +12,11 @@ router = APIRouter(
 )
 
 router.include_router(field.router)
-
+"""
 @router.get("/")
 def read_current_game(game:models.Game=Depends(oauth2.get_current_game), db:Session=Depends(get_db)):
     return game
-
+"""
 @router.get("/{id}/", status_code=status.HTTP_200_OK)
 def read_game(id:int, db:Session=Depends(get_db)):
     return game.read(id, db)

@@ -20,7 +20,7 @@ for key in d.keys():
 
 requests.post(url+"pieces/all/")
 
-for name in ["isshin", "genichiro", "sekiro", "fukuro"]:
+for name in ["admin", "isshin", "genichiro", "sekiro", "fukuro"]:
     body = {
         "name": name,
         "pwd": name + "1234",
