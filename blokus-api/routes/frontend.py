@@ -19,7 +19,7 @@ def get_games(request:Request, db:Session=Depends(get_db)):
     games = db.query(models.Game).all()
     tmpl = TEMPLATE_ENV.get_template("games.j2")
     token = request.cookies.get("access_token")
-    user = oauth2.get_current_user_from_cookie(token)
+    user = oauth2.get_current_user_from_cookie(request)
     c = tmpl.render(games=games, user=user)
     return HTMLResponse(content=c)
 
